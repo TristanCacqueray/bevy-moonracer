@@ -16,6 +16,7 @@ fn main() {
         .add_systems(Startup, setup_scene)
         .add_systems(Update, (update_bloom_settings, bounce_spheres))
         .add_systems(Update, bevy::window::close_on_esc)
+        .add_systems(FixedUpdate, move_ship)
         .run();
 }
 
@@ -30,6 +31,12 @@ fn setup_scene(
                 hdr: true, // 1. HDR is required for bloom
                 ..default()
             },
+            projection: OrthographicProjection {
+                scale: 3.0,
+                scaling_mode: bevy::render::camera::ScalingMode::FixedVertical(2.0),
+                ..default()
+            }
+            .into(),
             tonemapping: Tonemapping::TonyMcMapface, // 2. Using a tonemapper that desaturates to white is recommended
             transform: Transform::from_xyz(0.0, 0.0, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
             ..default()
@@ -38,7 +45,7 @@ fn setup_scene(
     ));
 
     let material_emissive1 = materials.add(StandardMaterial {
-        emissive: Color::rgb_linear(13.99, 5.32, 2.0), // 4. Put something bright in a dark environment to see the effect
+        emissive: Color::rgb_linear(13.99, 5.32, 2.0),
         ..default()
     });
     let material_emissive2 = materials.add(StandardMaterial {
@@ -64,9 +71,9 @@ fn setup_scene(
     );
 
     for x in -5..5 {
-        for z in -5..5 {
+        for y in 0..5 {
             let mut hasher = DefaultHasher::new();
-            (x, z).hash(&mut hasher);
+            (x, y).hash(&mut hasher);
             let rand = (hasher.finish() - 2) % 6;
 
             let material = match rand {
@@ -81,13 +88,38 @@ fn setup_scene(
                 PbrBundle {
                     mesh: mesh.clone(),
                     material,
-                    transform: Transform::from_xyz(x as f32 * 2.0, 0.0, z as f32 * 2.0),
+                    transform: Transform::from_xyz(
+                        x as f32 * 2.0,
+                        0.0,                   // y as f32,
+                        y as f32 * 2.0 - 10.0, // (y as f32).abs() * -2.0 - 1.0,
+                    ),
                     ..default()
                 },
                 Bouncing,
             ));
         }
     }
+
+    let ship = meshes.add(shape::Cube { size: 0.1 }.try_into().unwrap());
+    commands.spawn((
+        PbrBundle {
+            mesh: ship,
+            material: materials.add(Color::rgb(0.8, 0.7, 0.6).into()),
+            ..default()
+        },
+        Ship,
+    ));
+
+    commands.spawn((PbrBundle {
+        mesh: meshes.add(shape::Quad::new(Vec2::new(10.0, 5.0)).try_into().unwrap()),
+        material: materials.add(Color::rgb(0.1, 0.1, 0.6).into()),
+        transform: Transform {
+            // rotation: Quat::from_rotation_y(1.0),
+            translation: Vec3::new(0.0, 0.0, -5.0),
+            ..default()
+        },
+        ..default()
+    },));
 
     // example instructions
     commands.spawn(
@@ -106,6 +138,12 @@ fn setup_scene(
             ..default()
         }),
     );
+
+    // light
+    commands.spawn(PointLightBundle {
+        transform: Transform::from_xyz(3.0, 8.0, 5.0),
+        ..default()
+    });
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -159,4 +197,51 @@ fn bounce_spheres(time: Res<Time>, mut query: Query<&mut Transform, With<Bouncin
         transform.translation.y =
             (transform.translation.x + transform.translation.z + time.elapsed_seconds()).sin();
     }
+}
+
+#[derive(Component)]
+struct Ship;
+
+fn move_ship(
+    keyboard_input: Res<Input<ScanCode>>,
+    mut query: Query<&mut Transform, With<Ship>>,
+    time_step: Res<FixedTime>,
+) {
+    let mut ship_transform = query.single_mut();
+    let mut dx = 0.0;
+    let mut dy = 0.0;
+
+    for ev in keyboard_input.get_pressed() {
+        let code = ev.0;
+        match ev.0 {
+            105_u32 | 30_u32 => dx = -1.0,
+            106_u32 | 32_u32 => dx = 1.0,
+            103_u32 | 17_u32 => dy = 1.0,
+            108_u32 | 31_u32 => dy = -1.0,
+            _ => {}
+        }
+    }
+
+    /*
+    for ev in keyboard_input.get_just_pressed() {
+        println!("{} just ev: {:?}", now.as_nanos(), ev);
+    }
+    */
+
+    /*
+    if keyboard_input.pressed(KeyCode::Left) {
+        direction -= 1.0;
+    }
+
+    if keyboard_input.pressed(KeyCode::Right) {
+        direction += 1.0;
+    }
+    */
+
+    // Calculate the new horizontal ship position based on player input
+    let ts = time_step.period.as_secs_f32();
+    let new_x = ship_transform.translation.x + dx * ts;
+    ship_transform.translation.x = new_x;
+    let new_y = ship_transform.translation.y + dy * ts;
+    ship_transform.translation.y = new_y;
 }
