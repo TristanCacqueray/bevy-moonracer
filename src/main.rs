@@ -1,5 +1,6 @@
 //! Demo example copied from bloom_3d.rs
 
+// use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
 use bevy::{
     core_pipeline::{bloom::BloomSettings, tonemapping::Tonemapping},
     prelude::*,
@@ -9,6 +10,14 @@ use std::{
     hash::{Hash, Hasher},
 };
 
+use bevy::sprite::collide_aabb::{collide, Collision};
+
+mod wall;
+use wall::*;
+
+mod ship;
+use ship::*;
+
 fn main() {
     App::new()
         .insert_resource(ClearColor(Color::DARK_GRAY))
@@ -16,7 +25,9 @@ fn main() {
         .add_systems(Startup, setup_scene)
         .add_systems(Update, (update_bloom_settings, bounce_spheres))
         .add_systems(Update, bevy::window::close_on_esc)
-        .add_systems(FixedUpdate, move_ship)
+        .add_systems(FixedUpdate, update_scene)
+        //.add_plugins(LogDiagnosticsPlugin::default())
+        //.add_plugins(FrameTimeDiagnosticsPlugin::default())
         .run();
 }
 
@@ -100,26 +111,22 @@ fn setup_scene(
         }
     }
 
-    let ship = meshes.add(shape::Cube { size: 0.1 }.try_into().unwrap());
-    commands.spawn((
-        PbrBundle {
-            mesh: ship,
-            material: materials.add(Color::rgb(0.8, 0.7, 0.6).into()),
-            ..default()
-        },
-        Ship,
-    ));
+    commands.spawn((ShipBundle::new(&mut meshes, &mut materials), Ship));
 
-    commands.spawn((PbrBundle {
-        mesh: meshes.add(shape::Quad::new(Vec2::new(10.0, 5.0)).try_into().unwrap()),
-        material: materials.add(Color::rgb(0.1, 0.1, 0.6).into()),
-        transform: Transform {
-            // rotation: Quat::from_rotation_y(1.0),
-            translation: Vec3::new(0.0, 0.0, -5.0),
-            ..default()
-        },
-        ..default()
-    },));
+    // walls
+    let wmat = WallBundle::material(&mut materials);
+    commands.spawn((
+        WallBundle::new(&mut meshes, &wmat, [-5., -2.5].into(), [0.5, 5.0].into()),
+        Wall,
+    ));
+    commands.spawn((
+        WallBundle::new(&mut meshes, &wmat, [4.5, -2.5].into(), [0.5, 5.0].into()),
+        Wall,
+    ));
+    commands.spawn((
+        WallBundle::new(&mut meshes, &wmat, [-5., -2.5].into(), [10.0, 0.5].into()),
+        Wall,
+    ));
 
     // example instructions
     commands.spawn(
@@ -141,7 +148,7 @@ fn setup_scene(
 
     // light
     commands.spawn(PointLightBundle {
-        transform: Transform::from_xyz(3.0, 8.0, 5.0),
+        transform: Transform::from_xyz(0.0, 8.0, 0.0),
         ..default()
     });
 }
@@ -199,20 +206,20 @@ fn bounce_spheres(time: Res<Time>, mut query: Query<&mut Transform, With<Bouncin
     }
 }
 
-#[derive(Component)]
-struct Ship;
-
-fn move_ship(
+fn update_scene(
     keyboard_input: Res<Input<ScanCode>>,
-    mut query: Query<&mut Transform, With<Ship>>,
+    mut ship_query: Query<(&mut Transform, &mut Velocity), With<Ship>>,
+    collider_query: Query<&WallPosition>,
     time_step: Res<FixedTime>,
 ) {
-    let mut ship_transform = query.single_mut();
+    let ship = ship_query.single_mut();
+    let mut ship_transform = ship.0;
+    let mut ship_velocity = ship.1;
+
     let mut dx = 0.0;
     let mut dy = 0.0;
 
     for ev in keyboard_input.get_pressed() {
-        let code = ev.0;
         match ev.0 {
             105_u32 | 30_u32 => dx = -1.0,
             106_u32 | 32_u32 => dx = 1.0,
@@ -222,26 +229,39 @@ fn move_ship(
         }
     }
 
-    /*
-    for ev in keyboard_input.get_just_pressed() {
-        println!("{} just ev: {:?}", now.as_nanos(), ev);
-    }
-    */
-
-    /*
-    if keyboard_input.pressed(KeyCode::Left) {
-        direction -= 1.0;
-    }
-
-    if keyboard_input.pressed(KeyCode::Right) {
-        direction += 1.0;
-    }
-    */
+    ship_velocity.0.x = 0.8 * (dx + ship_velocity.0.x);
+    ship_velocity.0.y = 0.8 * (dy + ship_velocity.0.y - 0.3);
 
     // Calculate the new horizontal ship position based on player input
     let ts = time_step.period.as_secs_f32();
-    let new_x = ship_transform.translation.x + dx * ts;
-    ship_transform.translation.x = new_x;
-    let new_y = ship_transform.translation.y + dy * ts;
-    ship_transform.translation.y = new_y;
+    let new_x = ship_transform.translation.x + ship_velocity.0.x * ts;
+    let new_y = ship_transform.translation.y + ship_velocity.0.y * ts;
+    let mut new_pos = [new_x, new_y, 0.0].into();
+
+    for wall in &collider_query {
+        if let Some(collision) = collide(new_pos, Ship::size(), wall.translation, wall.size) {
+            match collision {
+                Collision::Left => {
+                    ship_velocity.0.x = 0.;
+                    new_pos.x = wall.left() - SHIP_RADIUS;
+                }
+                Collision::Right => {
+                    ship_velocity.0.x = 0.;
+                    new_pos.x = wall.right() + SHIP_RADIUS;
+                }
+                Collision::Top => {
+                    ship_velocity.0.y = 0.;
+                    new_pos.y = wall.top() + SHIP_RADIUS;
+                }
+                Collision::Bottom => {
+                    ship_velocity.0.y = 0.;
+                    new_pos.y = wall.bottom() - SHIP_RADIUS;
+                }
+                _ => { /* do nothing */ }
+            }
+        }
+    }
+
+    ship_transform.translation.x = new_pos.x;
+    ship_transform.translation.y = new_pos.y;
 }

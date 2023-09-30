@@ -85,6 +85,7 @@
             wayland # To use the wayland feature
 
             trunk
+            cargo-watch
           ];
 
           nativeBuildInputs = with pkgs;
