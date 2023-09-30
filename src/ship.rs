@@ -25,12 +25,18 @@ impl ShipBundle {
     pub fn new(
         meshes: &mut ResMut<Assets<Mesh>>,
         materials: &mut ResMut<Assets<StandardMaterial>>,
+        pos: Vec2,
     ) -> Self {
+        let translation = Vec3::new(pos.x, pos.y + SHIP_RADIUS, 0.0);
         Self {
             vel: Velocity([0., 0.].into()),
             pbr: PbrBundle {
                 mesh: meshes.add(shape::Cube { size: SHIP_SIZE }.try_into().unwrap()),
                 material: materials.add(Color::rgb(0.8, 0.7, 0.6).into()),
+                transform: Transform {
+                    translation,
+                    ..default()
+                },
                 ..default()
             },
         }

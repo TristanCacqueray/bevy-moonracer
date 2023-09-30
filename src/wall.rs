@@ -26,8 +26,7 @@ impl WallBundle {
         pos: Vec2,
         size: Vec2,
     ) -> Self {
-        // move pos to the center
-        let translation = [pos.x + size.x / 2., pos.y + size.y / 2., 0.].into();
+        let translation = pos.extend(0.0);
         Self {
             pos: WallPosition { translation, size },
             pbr: PbrBundle {
