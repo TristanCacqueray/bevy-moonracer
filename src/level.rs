@@ -53,14 +53,12 @@ impl Screen {
     }
 }
 
-struct Goal(Vec2);
-
 #[derive(Resource)]
 pub struct Level {
     name: String,
     walls: Vec<Rectangle>,
     pad: Rectangle,
-    goals: Vec<Goal>,
+    goals: Vec<Vec2>,
 }
 
 pub fn simple() -> Level {
@@ -81,7 +79,12 @@ pub fn simple() -> Level {
             size: [80.0, 5.0].into(),
         },
     ];
-    let goals = vec![Goal([40.0, 8.0].into())];
+    let goals = vec![
+        [40.0, 8.0].into(),
+        [10.0, 16.0].into(),
+        [15.0, 50.0].into(),
+        [20.0, 20.0].into(),
+    ];
     Level {
         name: "simple".into(),
         walls,
@@ -96,6 +99,7 @@ pub fn simple() -> Level {
 
 pub fn setup(
     mut commands: Commands,
+    mut game_state: ResMut<crate::resources::GameResources>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     level: Res<Level>,
@@ -113,6 +117,11 @@ pub fn setup(
         ));
     }
 
+    // register goals
+    for goal in level.goals.iter().skip(1) {
+        game_state.goals.push(screen.goal_pos(*goal));
+    }
+
     let pad_mat = materials.add(Color::rgb(0.9, 0.9, 0.2).into());
     let (pad_pos, pad_size) = screen.center_pos(&level.pad);
     commands.spawn((
@@ -121,7 +130,7 @@ pub fn setup(
     ));
 
     // spawn first goal
-    let goal_pos = screen.goal_pos(level.goals[0].0);
+    let goal_pos = screen.goal_pos(level.goals[0]);
     println!("goal: {}", goal_pos);
     commands.spawn((
         star::StarBundle::new(&mut meshes, &mut materials, goal_pos),
