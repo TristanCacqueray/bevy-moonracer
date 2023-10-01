@@ -66,6 +66,12 @@
           cargoToml = ./Cargo.toml;
           cargoArtifacts = cargoArtifactsWasm;
           trunkIndexPath = "./index.html";
+          # Fixup the dist output for a publishable package.
+          postInstall = ''
+            rm $out/index.html
+            mv $out/*.js $out/moonracer.js
+            mv $out/*.wasm $out/moonracer.wasm
+          '';
         });
 
       in {

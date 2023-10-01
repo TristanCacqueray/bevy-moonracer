@@ -58,19 +58,18 @@ pub fn move_ship(
     mut controller: ResMut<GameResources>,
     mut ship_query: Query<(&mut Transform, &mut ship::Velocity), With<ship::Ship>>,
     collider_query: Query<&wall::WallPosition>,
-    time_step: Res<FixedTime>,
 ) {
     let ship = ship_query.single_mut();
     let mut ship_transform = ship.0;
     let mut ship_velocity = ship.1;
 
-    ship_velocity.0.x = 0.8 * (controller.thrust.x + ship_velocity.0.x);
-    ship_velocity.0.y = 0.8 * (controller.thrust.y + ship_velocity.0.y - 0.3);
+    let thrust_power = Vec2::new(0.02, 0.02);
+    let damp = 0.90;
 
-    let ts = time_step.period.as_secs_f32();
-    let new_x = ship_transform.translation.x + ship_velocity.0.x * ts;
-    let new_y = ship_transform.translation.y + ship_velocity.0.y * ts;
-    let mut new_pos = [new_x, new_y, 0.0].into();
+    *ship_velocity = ship::Velocity(damp * (controller.thrust * thrust_power + ship_velocity.0));
+
+    let gravity = Vec3::new(0.0, -0.01, 0.0);
+    let mut new_pos: Vec3 = ship_transform.translation + gravity + ship_velocity.0.extend(0.0);
 
     for wall in &collider_query {
         if let Some(collision) = collide(new_pos, ship::Ship::size(), wall.translation, wall.size) {
@@ -96,8 +95,7 @@ pub fn move_ship(
         }
     }
 
-    ship_transform.translation.x = new_pos.x;
-    ship_transform.translation.y = new_pos.y;
+    ship_transform.translation = new_pos;
 
     controller.frame_count += 1;
 }
@@ -111,7 +109,10 @@ pub fn handle_input(
     let mut dx = 0.0;
     let mut dy = 0.0;
 
-    if keyboard_input.just_released(ScanCode(19)) {
+    if keyboard_input.just_released(ScanCode(19)) ||
+        // for wasm keycode
+        keyboard_input.just_released(ScanCode(82))
+    {
         next_state.set(GameStatus::Reloading);
         return;
     }
