@@ -22,10 +22,7 @@ pub fn display_score(
 ) {
     let mut text = text.single_mut();
     let text = &mut text.sections[0].value;
-    *text = format!(
-        "GG! {} (press 'r' to try again)",
-        controller.start_time.elapsed().as_millis()
-    );
+    *text = format!("GG! {} (press 'r' to try again)", controller.elapsed());
 
     star_query.single_mut().translation = [50.0, 50.0, 50.0].into();
     ship_query.single_mut().translation = [50.0, 50.0, 50.0].into();
@@ -40,11 +37,7 @@ pub fn check_star(
 ) {
     let mut text = text.single_mut();
     let text = &mut text.sections[0].value;
-    *text = format!(
-        "Flying: {} {}",
-        controller.score,
-        controller.start_time.elapsed().as_millis()
-    );
+    *text = format!("Flying: {} {}", controller.score, controller.elapsed());
 
     let ship_pos = ship_query.single().translation.truncate();
     let mut star = star_query.single_mut();
@@ -62,7 +55,7 @@ pub fn check_star(
 }
 
 pub fn move_ship(
-    controller: Res<GameResources>,
+    mut controller: ResMut<GameResources>,
     mut ship_query: Query<(&mut Transform, &mut ship::Velocity), With<ship::Ship>>,
     collider_query: Query<&wall::WallPosition>,
     time_step: Res<FixedTime>,
@@ -105,6 +98,8 @@ pub fn move_ship(
 
     ship_transform.translation.x = new_pos.x;
     ship_transform.translation.y = new_pos.y;
+
+    controller.frame_count += 1;
 }
 
 pub fn handle_input(
@@ -112,7 +107,6 @@ pub fn handle_input(
     state: Res<State<GameStatus>>,
     mut next_state: ResMut<NextState<GameStatus>>,
     keyboard_input: Res<Input<ScanCode>>,
-    time: Res<Time>,
 ) {
     let mut dx = 0.0;
     let mut dy = 0.0;
@@ -124,10 +118,14 @@ pub fn handle_input(
 
     for ev in keyboard_input.get_pressed() {
         match ev.0 {
-            105_u32 | 30_u32 => dx = -1.0,
-            106_u32 | 32_u32 => dx = 1.0,
-            103_u32 | 17_u32 => dy = 1.0,
-            108_u32 | 31_u32 => dy = -1.0,
+            // left (a | a(firefox) | arrow)
+            105_u32 | 65_u32 | 30_u32 => dx = -1.0,
+            // right
+            106_u32 | 68_u32 | 32_u32 => dx = 1.0,
+            // up
+            103_u32 | 87_u32 | 17_u32 => dy = 1.0,
+            // down
+            108_u32 | 83_u32 | 31_u32 => dy = -1.0,
             key => info!("Unknown key code {}", key),
         }
     }
@@ -136,7 +134,7 @@ pub fn handle_input(
     if controller.thrust != default() {
         if state.get() == &GameStatus::Spawned {
             info!("Lift off!");
-            controller.start_time = time.last_update().unwrap();
+            controller.frame_count = 0;
             next_state.set(GameStatus::Flying);
         }
     }

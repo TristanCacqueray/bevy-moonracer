@@ -44,13 +44,15 @@
         src = pkgs.lib.cleanSourceWith {
           src = ./.; # The original, unfiltered source
           filter = path: type:
+            # prevent "error: linker `clang` not found" issue
+            !(pkgs.lib.hasSuffix "config.toml" path) && (
             (pkgs.lib.hasSuffix ".html" path)
             || (pkgs.lib.hasSuffix ".config.js" path)
             || (pkgs.lib.hasSuffix ".css" path)
             || (pkgs.lib.hasSuffix ".md" path)
             || (pkgs.lib.hasSuffix ".txt" path) ||
             # Default filter from crane (allow .rs files)
-            (craneLib.filterCargoSources path type);
+            (craneLib.filterCargoSources path type));
         };
         web-info = {
           src = src;
