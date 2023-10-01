@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+use crate::moonracer::GameStatus;
 use crate::{ship, star, velocity_gizmo, wall};
 
 struct Rectangle {
@@ -95,6 +96,35 @@ pub fn simple() -> Level {
             size: [6.0, 0.5].into(),
         },
     }
+}
+
+pub fn reload(
+    mut game_state: ResMut<crate::resources::GameResources>,
+    mut next_state: ResMut<NextState<GameStatus>>,
+    mut star_query: Query<&mut Transform, (With<crate::star::Star>, Without<crate::ship::Ship>)>,
+    mut ship_query: Query<(&mut Transform, &mut ship::Velocity), With<ship::Ship>>,
+    level: Res<Level>,
+) {
+    let screen = Screen::new(Vec2::new(10.0, 5.0));
+
+    info!("Reloading!");
+    // should we despawn and re-setup the level instead?
+    next_state.set(GameStatus::Spawned);
+    *game_state = default();
+    for goal in level.goals.iter().skip(1) {
+        game_state.goals.push(screen.goal_pos(*goal));
+    }
+
+    // reset star
+    let mut star = star_query.single_mut();
+    star.translation = screen.goal_pos(level.goals[0]).extend(0.0);
+
+    // reset ship
+    let (pad_pos, pad_size) = screen.center_pos(&level.pad);
+    let ship_pos = Vec2::new(pad_pos.x, pad_pos.y - pad_size.y / 2.0);
+    let mut ship = ship_query.single_mut();
+    ship.0.translation = ship_pos.extend(0.0);
+    *ship.1 = ship::Velocity(Vec2::new(0.0, 0.0));
 }
 
 pub fn setup(

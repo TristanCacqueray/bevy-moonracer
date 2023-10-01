@@ -11,12 +11,24 @@ pub enum GameStatus {
     Spawned,
     Flying,
     GameOver,
+    Reloading,
 }
 
-pub fn display_score(controller: Res<GameResources>, mut text: Query<&mut Text>) {
+pub fn display_score(
+    controller: Res<GameResources>,
+    mut text: Query<&mut Text>,
+    mut ship_query: Query<&mut Transform, With<crate::ship::Ship>>,
+    mut star_query: Query<&mut Transform, (With<crate::star::Star>, Without<crate::ship::Ship>)>,
+) {
     let mut text = text.single_mut();
     let text = &mut text.sections[0].value;
-    *text = format!("GG! {}", controller.start_time.elapsed().as_millis());
+    *text = format!(
+        "GG! {} (press 'r' to try again)",
+        controller.start_time.elapsed().as_millis()
+    );
+
+    star_query.single_mut().translation = [50.0, 50.0, 50.0].into();
+    ship_query.single_mut().translation = [50.0, 50.0, 50.0].into();
 }
 
 pub fn check_star(
@@ -39,7 +51,7 @@ pub fn check_star(
     let star_pos = star.translation.truncate();
 
     if Star::reached(star_pos, ship_pos) {
-        info!("Reached star!");
+        info!("Reached star! {}", controller.score);
         if let Some(next_start) = controller.goals.get(controller.score) {
             star.translation = next_start.extend(0.0);
             controller.score += 1;
@@ -105,13 +117,18 @@ pub fn handle_input(
     let mut dx = 0.0;
     let mut dy = 0.0;
 
+    if keyboard_input.just_released(ScanCode(19)) {
+        next_state.set(GameStatus::Reloading);
+        return;
+    }
+
     for ev in keyboard_input.get_pressed() {
         match ev.0 {
             105_u32 | 30_u32 => dx = -1.0,
             106_u32 | 32_u32 => dx = 1.0,
             103_u32 | 17_u32 => dy = 1.0,
             108_u32 | 31_u32 => dy = -1.0,
-            _ => {}
+            key => info!("Unknown key code {}", key),
         }
     }
     controller.thrust = Vec2::new(dx, dy);

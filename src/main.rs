@@ -27,6 +27,10 @@ fn main() {
         .add_systems(Update, moonracer::handle_input)
         .add_systems(
             Update,
+            level::reload.run_if(in_state(moonracer::GameStatus::Reloading)),
+        )
+        .add_systems(
+            Update,
             (star::animate, velocity_gizmo::update_gizmo)
                 .run_if(in_state(moonracer::GameStatus::Flying)),
         )
