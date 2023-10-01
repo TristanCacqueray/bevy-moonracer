@@ -39,7 +39,7 @@ pub fn check_star(
     let star_pos = star.translation.truncate();
 
     if Star::reached(star_pos, ship_pos) {
-        println!("Reached star!");
+        info!("Reached star!");
         if let Some(next_start) = controller.goals.get(controller.score) {
             star.translation = next_start.extend(0.0);
             controller.score += 1;
@@ -118,7 +118,7 @@ pub fn handle_input(
 
     if controller.thrust != default() {
         if state.get() == &GameStatus::Spawned {
-            println!("Lift off!");
+            info!("Lift off!");
             controller.start_time = time.last_update().unwrap();
             next_state.set(GameStatus::Flying);
         }

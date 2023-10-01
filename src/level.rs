@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{ship, star, wall};
+use crate::{ship, star, velocity_gizmo, wall};
 
 struct Rectangle {
     top_left: Vec2,
@@ -122,7 +122,7 @@ pub fn setup(
         game_state.goals.push(screen.goal_pos(*goal));
     }
 
-    let pad_mat = materials.add(Color::rgb(0.9, 0.9, 0.2).into());
+    let pad_mat = materials.add(Color::rgba(0.0, 1.0, 0.0, 0.5).into());
     let (pad_pos, pad_size) = screen.center_pos(&level.pad);
     commands.spawn((
         wall::WallBundle::new(&mut meshes, &pad_mat, pad_pos, pad_size),
@@ -131,25 +131,32 @@ pub fn setup(
 
     // spawn first goal
     let goal_pos = screen.goal_pos(level.goals[0]);
-    println!("goal: {}", goal_pos);
+    info!("goal: {}", goal_pos);
     commands.spawn((
         star::StarBundle::new(&mut meshes, &mut materials, goal_pos),
         star::Star,
     ));
 
     // spawn the ship on the pad
-    let ship_pos = Vec2::new(pad_pos.x, pad_pos.y + pad_size.y / 2.0);
-    commands.spawn((
-        ship::ShipBundle::new(&mut meshes, &mut materials, ship_pos),
-        ship::Ship,
-    ));
+    let ship_pos = Vec2::new(pad_pos.x, pad_pos.y - pad_size.y / 2.0);
+    commands
+        .spawn((
+            ship::ShipBundle::new(&mut meshes, &mut materials, ship_pos),
+            ship::Ship,
+        ))
+        .with_children(|parent| {
+            parent.spawn((
+                velocity_gizmo::new(&mut meshes, &mut materials),
+                velocity_gizmo::VelocityGizmo,
+            ));
+        });
 
     // example instructions
     commands.spawn(TextBundle::from_section(
         &level.name,
         TextStyle {
             font_size: 20.0,
-            color: Color::BLACK,
+            color: Color::WHITE,
             ..default()
         },
     ));

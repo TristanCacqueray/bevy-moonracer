@@ -11,11 +11,12 @@ mod moonracer;
 mod resources;
 mod ship;
 mod star;
+mod velocity_gizmo;
 mod wall;
 
 fn main() {
     App::new()
-        // .insert_resource(ClearColor(Color::DARK_GRAY))
+        .insert_resource(ClearColor(Color::BLACK))
         .add_plugins(DefaultPlugins)
         .add_state::<moonracer::GameStatus>()
         .init_resource::<resources::GameResources>()
@@ -24,6 +25,11 @@ fn main() {
         .add_systems(Startup, setup_camera)
         .add_systems(Update, bevy::window::close_on_esc)
         .add_systems(Update, moonracer::handle_input)
+        .add_systems(
+            Update,
+            (star::animate, velocity_gizmo::update_gizmo)
+                .run_if(in_state(moonracer::GameStatus::Flying)),
+        )
         // Configure how frequently our gameplay systems are run
         .insert_resource(FixedTime::new_from_secs(1.0 / 60.0))
         .add_systems(
@@ -70,6 +76,10 @@ fn setup_camera(mut commands: Commands) {
 
     // light
     commands.spawn(PointLightBundle {
+        point_light: PointLight {
+            intensity: 1600.0,
+            ..default()
+        },
         transform: Transform::from_xyz(1.0, 8.0, 2.0),
         ..default()
     });

@@ -32,7 +32,12 @@ impl ShipBundle {
             vel: Velocity([0., 0.].into()),
             pbr: PbrBundle {
                 mesh: meshes.add(shape::Cube { size: SHIP_SIZE }.try_into().unwrap()),
-                material: materials.add(Color::rgb(0.8, 0.7, 0.6).into()),
+                material: materials.add(StandardMaterial {
+                    emissive: Color::rgb_linear(5.0, 5.0, 5.0),
+                    metallic: 1.0,
+                    perceptual_roughness: 0.0,
+                    ..default()
+                }),
                 transform: Transform {
                     translation,
                     ..default()

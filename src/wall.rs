@@ -17,7 +17,12 @@ pub struct WallBundle {
 
 impl WallBundle {
     pub fn material(materials: &mut ResMut<Assets<StandardMaterial>>) -> Handle<StandardMaterial> {
-        materials.add(Color::rgb(0.1, 0.9, 0.2).into())
+        materials.add(StandardMaterial {
+            base_color: Color::hex("#f5f5f5").unwrap(),
+            perceptual_roughness: 1.0,
+            metallic: 0.0,
+            ..default()
+        })
     }
 
     pub fn new(
