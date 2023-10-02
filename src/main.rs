@@ -16,8 +16,9 @@ mod wall;
 
 fn main() {
     App::new()
-        .insert_resource(ClearColor(Color::BLACK))
         .add_plugins(DefaultPlugins)
+        .add_plugins(bevy_wasm_window_resize::WindowResizePlugin)
+        .insert_resource(ClearColor(Color::BLACK))
         .add_state::<moonracer::GameStatus>()
         .init_resource::<resources::GameResources>()
         .insert_resource(level::simple())

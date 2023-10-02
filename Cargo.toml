@@ -8,10 +8,13 @@ edition = "2021"
 [dependencies.bevy]
 git = "https://github.com/TristanCacqueray/bevy.git"
 branch = "wgpu"
-
 # Disable the default features if there are any that you do not want
 # default-features = false
 features = [ "wayland" ]
+
+[dependencies.bevy_wasm_window_resize]
+git = "https://github.com/TristanCacqueray/bevy_wasm_window_resize.git"
+branch = "bevy-devel"
 
 # Enable a small amount of optimization in debug mode
 [profile.dev]

@@ -324,6 +324,7 @@ name = "bevy-moonracer"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "bevy_wasm_window_resize",
 ]
 
 [[package]]
@@ -977,6 +978,15 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.37",
+]
+
+[[package]]
+name = "bevy_wasm_window_resize"
+version = "0.1.1"
+source = "git+https://github.com/TristanCacqueray/bevy_wasm_window_resize.git?branch=bevy-devel#4896c11c509ea604e3c7c57cdaaf7012e05f60be"
+dependencies = [
+ "bevy",
+ "web-sys",
 ]
 
 [[package]]
