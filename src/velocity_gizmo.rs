@@ -15,7 +15,7 @@ pub fn update_gizmo(
     let angle = Vec2::new(0.0, 1.0).angle_between(ship.0);
 
     gizmo.rotation = Quat::from_rotation_z(angle);
-    gizmo.scale.y = speed / 3.0;
+    gizmo.scale.y = speed * 20.0;
 }
 
 pub fn new(
