@@ -63,7 +63,7 @@ pub fn move_ship(
     let mut ship_transform = ship.0;
     let mut ship_velocity = ship.1;
 
-    let thrust_power = Vec2::new(0.02, 0.02);
+    let thrust_power = Vec2::new(0.01, 0.013);
     let damp = 0.90;
 
     *ship_velocity = ship::Velocity(damp * (controller.thrust * thrust_power + ship_velocity.0));
