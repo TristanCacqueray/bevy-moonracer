@@ -25,7 +25,7 @@ impl Rectangle {
     }
 }
 
-struct Screen {
+pub struct Screen {
     dim: Vec2,
     center: Vec2,
 }
@@ -52,7 +52,12 @@ impl Screen {
         pos.y *= -1.0;
         pos
     }
+    pub fn default() -> Self {
+        Screen::new(Vec2::new(10.0, 5.0))
+    }
 }
+
+const OFFSCREEN: Vec2 = Vec2::new(50.0, 50.0);
 
 #[derive(Resource)]
 pub struct Level {
@@ -104,33 +109,44 @@ pub fn simple() -> Level {
     }
 }
 
+pub fn initial_ship_pos(level: &Level, screen: &Screen) -> Vec2 {
+    let (pad_pos, pad_size) = screen.center_pos(&level.pad);
+    Vec2::new(pad_pos.x, pad_pos.y - pad_size.y / 2.0)
+}
+
 pub fn reload(
     mut game_state: ResMut<crate::resources::GameResources>,
     mut next_state: ResMut<NextState<GameStatus>>,
-    mut star_query: Query<&mut Transform, (With<crate::star::Star>, Without<crate::ship::Ship>)>,
-    mut ship_query: Query<(&mut Transform, &mut ship::Velocity), With<ship::Ship>>,
+    mut query: ParamSet<(
+        Query<(&mut Transform, &mut ship::Velocity), With<ship::Ship>>,
+        Query<&mut Transform, With<ship::Ghost>>,
+        Query<&mut Transform, With<crate::star::Star>>,
+    )>,
     level: Res<Level>,
 ) {
-    let screen = Screen::new(Vec2::new(10.0, 5.0));
+    let screen = Screen::default();
 
     info!("Reloading!");
     // should we despawn and re-setup the level instead?
     next_state.set(GameStatus::Spawned);
-    *game_state = default();
-    for goal in level.goals.iter().skip(1) {
-        game_state.goals.push(screen.goal_pos(*goal));
-    }
+    game_state.thrust = default();
+    game_state.score = 0;
+    game_state.thrust_history.clear();
 
     // reset star
+    let mut star_query = query.p2();
     let mut star = star_query.single_mut();
     star.translation = screen.goal_pos(level.goals[0]).extend(0.0);
 
     // reset ship
-    let (pad_pos, pad_size) = screen.center_pos(&level.pad);
-    let ship_pos = Vec2::new(pad_pos.x, pad_pos.y - pad_size.y / 2.0);
+    let mut ship_query = query.p0();
     let mut ship = ship_query.single_mut();
-    ship.0.translation = ship_pos.extend(0.0);
+    ship.0.translation = initial_ship_pos(&level, &screen).extend(0.0);
     *ship.1 = ship::Velocity(Vec2::new(0.0, 0.0));
+
+    // reset ghost
+    let mut ghost_query = query.p1();
+    ghost_query.single_mut().translation = OFFSCREEN.extend(0.0);
 }
 
 pub fn setup(
@@ -174,10 +190,10 @@ pub fn setup(
     ));
 
     // spawn the ship on the pad
-    let ship_pos = Vec2::new(pad_pos.x, pad_pos.y - pad_size.y / 2.0);
+    let ship_pos = initial_ship_pos(&level, &screen);
     commands
         .spawn((
-            ship::ShipBundle::new(&mut meshes, &mut materials, ship_pos),
+            ship::ShipBundle::new(&mut meshes, &mut materials, ship_pos, 0.0),
             ship::Ship,
         ))
         .with_children(|parent| {
@@ -186,6 +202,11 @@ pub fn setup(
                 velocity_gizmo::VelocityGizmo,
             ));
         });
+
+    commands.spawn((
+        ship::ShipBundle::new(&mut meshes, &mut materials, OFFSCREEN, 4.5),
+        ship::Ghost,
+    ));
 
     // example instructions
     commands.spawn(TextBundle::from_section(

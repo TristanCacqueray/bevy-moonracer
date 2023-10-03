@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::resources::GameResources;
 use crate::star::Star;
-use crate::{ship, wall};
+use crate::{level, resources, ship, wall};
 use bevy::sprite::collide_aabb::{collide, Collision};
 
 #[derive(Clone, Eq, PartialEq, Debug, Hash, Default, States)]
@@ -54,40 +54,74 @@ pub fn check_star(
     }
 }
 
-pub fn move_ship(
-    mut controller: ResMut<GameResources>,
-    mut ship_query: Query<(&mut Transform, &mut ship::Velocity), With<ship::Ship>>,
+pub fn update_ghost(
+    mut game_state: ResMut<crate::resources::GameResources>,
+    level: Res<level::Level>,
     collider_query: Query<&wall::WallPosition>,
 ) {
-    let ship = ship_query.single_mut();
-    let mut ship_transform = ship.0;
-    let mut ship_velocity = ship.1;
+    if let Some(prev_ghost) = &game_state.ghost {
+        if prev_ghost.score >= game_state.score && prev_ghost.frame_count < game_state.frame_count {
+            return;
+        }
+    }
+    let screen = level::Screen::default();
+    let ghost = compute_ghost(
+        level::initial_ship_pos(&level, &screen),
+        &game_state.thrust_history,
+        &collider_query,
+    );
+    game_state.ghost = Some(resources::Ghost {
+        score: game_state.score,
+        frame_count: game_state.frame_count,
+        positions: ghost,
+    });
+}
 
+fn compute_ghost(
+    initial_pos: Vec2,
+    thrust_history: &Vec<Vec2>,
+    collider_query: &Query<&wall::WallPosition>,
+) -> Vec<Vec3> {
+    let mut ghost = Vec::with_capacity(thrust_history.len());
+    let mut velocity = ship::Velocity(Vec2::new(0.0, 0.0));
+    let mut pos = initial_pos.extend(0.0);
+    for thrust in thrust_history {
+        (velocity, pos) = simulate_ship(thrust, &velocity, pos, collider_query);
+        ghost.push(pos);
+    }
+    ghost
+}
+
+fn simulate_ship(
+    current_thrust: &Vec2,
+    velocity: &ship::Velocity,
+    pos: Vec3,
+    collider_query: &Query<&wall::WallPosition>,
+) -> (ship::Velocity, Vec3) {
     let thrust_power = Vec2::new(0.01, 0.013);
     let damp = 0.90;
-
-    *ship_velocity = ship::Velocity(damp * (controller.thrust * thrust_power + ship_velocity.0));
-
     let gravity = Vec3::new(0.0, -0.01, 0.0);
-    let mut new_pos: Vec3 = ship_transform.translation + gravity + ship_velocity.0.extend(0.0);
 
-    for wall in &collider_query {
+    let mut new_velocity = ship::Velocity(damp * (*current_thrust * thrust_power + velocity.0));
+    let mut new_pos: Vec3 = pos + gravity + new_velocity.0.extend(0.0);
+
+    for wall in collider_query {
         if let Some(collision) = collide(new_pos, ship::Ship::size(), wall.translation, wall.size) {
             match collision {
                 Collision::Left => {
-                    ship_velocity.0.x = 0.;
+                    new_velocity.0.x = 0.;
                     new_pos.x = wall.left() - ship::SHIP_RADIUS;
                 }
                 Collision::Right => {
-                    ship_velocity.0.x = 0.;
+                    new_velocity.0.x = 0.;
                     new_pos.x = wall.right() + ship::SHIP_RADIUS;
                 }
                 Collision::Top => {
-                    ship_velocity.0.y = 0.;
+                    new_velocity.0.y = 0.;
                     new_pos.y = wall.top() + ship::SHIP_RADIUS;
                 }
                 Collision::Bottom => {
-                    ship_velocity.0.y = 0.;
+                    new_velocity.0.y = 0.;
                     new_pos.y = wall.bottom() - ship::SHIP_RADIUS;
                 }
                 _ => { /* do nothing */ }
@@ -95,9 +129,43 @@ pub fn move_ship(
         }
     }
 
-    ship_transform.translation = new_pos;
+    (new_velocity, new_pos)
+}
+
+pub fn move_ship(
+    mut controller: ResMut<GameResources>,
+    mut ship_query: ParamSet<(
+        Query<(&mut Transform, &mut ship::Velocity), With<ship::Ship>>,
+        Query<&mut Transform, With<ship::Ghost>>,
+    )>,
+    collider_query: Query<&wall::WallPosition>,
+) {
+    let mut ship_binding = ship_query.p0();
+    let mut ship = ship_binding.single_mut();
+    let current_thrust: Vec2 = controller.thrust;
+
+    let (new_velocity, new_pos) = simulate_ship(
+        &current_thrust,
+        &ship.1,
+        ship.0.translation,
+        &collider_query,
+    );
+
+    *ship.1 = new_velocity;
+    ship.0.translation = new_pos;
+
+    let current_frame = controller.frame_count;
+    if let Some(pos) = controller
+        .ghost
+        .as_ref()
+        .and_then(|ghost| ghost.positions.get(current_frame))
+    {
+        let mut query = ship_query.p1();
+        query.single_mut().translation = *pos;
+    }
 
     controller.frame_count += 1;
+    controller.thrust_history.push(current_thrust);
 }
 
 const R: ScanCode = ScanCode(19);

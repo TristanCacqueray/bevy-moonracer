@@ -28,7 +28,9 @@ fn main() {
         .add_systems(Update, moonracer::handle_input)
         .add_systems(
             Update,
-            level::reload.run_if(in_state(moonracer::GameStatus::Reloading)),
+            (moonracer::update_ghost, level::reload)
+                .chain()
+                .run_if(in_state(moonracer::GameStatus::Reloading)),
         )
         .add_systems(
             Update,

@@ -3,12 +3,20 @@ use bevy::prelude::*;
 
 pub const FREQ: f32 = 1.0 / 60.0;
 
+pub struct Ghost {
+    pub score: usize,
+    pub frame_count: usize,
+    pub positions: Vec<Vec3>,
+}
+
 #[derive(Resource)]
 pub struct GameResources {
     pub thrust: Vec2,
     pub frame_count: usize,
     pub score: usize,
     pub goals: Vec<Vec2>,
+    pub thrust_history: Vec<Vec2>,
+    pub ghost: Option<Ghost>,
 }
 
 impl GameResources {
@@ -27,6 +35,8 @@ impl Default for GameResources {
             frame_count: 0,
             score: 0,
             goals: vec![],
+            thrust_history: vec![],
+            ghost: None,
         }
     }
 }
