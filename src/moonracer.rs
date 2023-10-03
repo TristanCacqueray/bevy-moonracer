@@ -100,6 +100,30 @@ pub fn move_ship(
     controller.frame_count += 1;
 }
 
+const R: ScanCode = ScanCode(19);
+
+const W: ScanCode = ScanCode(103);
+const A: ScanCode = ScanCode(105);
+const S: ScanCode = ScanCode(108);
+const D: ScanCode = ScanCode(106);
+
+// arrow keys
+const AL: ScanCode = ScanCode(30);
+const AR: ScanCode = ScanCode(32);
+const AU: ScanCode = ScanCode(17);
+const AD: ScanCode = ScanCode(31);
+
+// wasm (firefox)
+const R_W: ScanCode = ScanCode(82);
+const W_W: ScanCode = ScanCode(87);
+const A_W: ScanCode = ScanCode(65);
+const S_W: ScanCode = ScanCode(83);
+const D_W: ScanCode = ScanCode(68);
+const AL_W: ScanCode = ScanCode(37);
+const AR_W: ScanCode = ScanCode(39);
+const AU_W: ScanCode = ScanCode(38);
+const AD_W: ScanCode = ScanCode(40);
+
 pub fn handle_input(
     mut controller: ResMut<GameResources>,
     state: Res<State<GameStatus>>,
@@ -109,25 +133,22 @@ pub fn handle_input(
     let mut dx = 0.0;
     let mut dy = 0.0;
 
-    if keyboard_input.just_released(ScanCode(19)) ||
-        // for wasm keycode
-        keyboard_input.just_released(ScanCode(82))
-    {
+    if keyboard_input.just_released(R) || keyboard_input.just_released(R_W) {
         next_state.set(GameStatus::Reloading);
         return;
     }
 
     for ev in keyboard_input.get_pressed() {
-        match ev.0 {
-            // left (a | a(firefox) | arrow)
-            105_u32 | 65_u32 | 30_u32 => dx = -1.0,
+        match *ev {
+            // left
+            A | A_W | AL | AL_W => dx = -1.0,
             // right
-            106_u32 | 68_u32 | 32_u32 => dx = 1.0,
+            D | D_W | AR | AR_W => dx = 1.0,
             // up
-            103_u32 | 87_u32 | 17_u32 => dy = 1.0,
+            W | W_W | AU | AU_W => dy = 1.0,
             // down
-            108_u32 | 83_u32 | 31_u32 => dy = -1.0,
-            key => info!("Unknown key code {}", key),
+            S | S_W | AD | AD_W => dy = -1.0,
+            key => info!("Unknown key code {}", key.0),
         }
     }
     controller.thrust = Vec2::new(dx, dy);
