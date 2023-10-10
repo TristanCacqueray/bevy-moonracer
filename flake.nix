@@ -50,6 +50,7 @@
             || (pkgs.lib.hasSuffix ".config.js" path)
             || (pkgs.lib.hasSuffix ".css" path)
             || (pkgs.lib.hasSuffix ".md" path)
+            || (pkgs.lib.hasSuffix ".svg" path)
             || (pkgs.lib.hasSuffix ".txt" path) ||
             # Default filter from crane (allow .rs files)
             (craneLib.filterCargoSources path type));

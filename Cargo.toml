@@ -5,12 +5,31 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[dependencies]
+roxmltree = "0.18"
+itertools = "0.11"
+
 [dependencies.bevy]
 git = "https://github.com/TristanCacqueray/bevy.git"
 branch = "wgpu"
 # Disable the default features if there are any that you do not want
-# default-features = false
-features = [ "wayland" ]
+default-features = true
+features = [
+  # core
+  "bevy_core_pipeline",
+  "bevy_pbr",
+  "bevy_render",
+  "bevy_text",
+  "multi-threaded",
+
+  # native video
+  "wayland",
+  "bevy_winit",
+
+  # audio
+  "bevy_audio",
+  "vorbis",
+]
 
 [dependencies.bevy_wasm_window_resize]
 git = "https://github.com/TristanCacqueray/bevy_wasm_window_resize.git"
@@ -23,3 +42,8 @@ opt-level = 1
 # Enable high optimizations for dependencies (incl. Bevy), but not for our code:
 [profile.dev.package."*"]
 opt-level = 3
+
+[[example]]
+name = "level"
+path = "src/test_level_loader.rs"
+doc-scrape-examples = true

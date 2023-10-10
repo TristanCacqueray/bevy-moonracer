@@ -3,9 +3,10 @@ use bevy::prelude::*;
 use crate::moonracer::GameStatus;
 use crate::{ship, star, velocity_gizmo, wall};
 
-struct Rectangle {
-    top_left: Vec2,
-    size: Vec2,
+#[derive(Debug)]
+pub struct Rectangle {
+    pub top_left: Vec2,
+    pub size: Vec2,
 }
 
 /*
@@ -15,6 +16,10 @@ Level coordinate are from inkscape, top left is at (0,0), bottom right at (80,60
 const LEVEL_SIZE: Vec2 = Vec2::new(80.0, 60.0);
 
 impl Rectangle {
+    pub fn new(top_left: Vec2, size: Vec2) -> Self {
+        Self { top_left, size }
+    }
+
     fn bottom_uv(&self) -> Vec2 {
         let bottom_left = Vec2::new(self.top_left.x, self.top_left.y + self.size.y);
         bottom_left / LEVEL_SIZE
@@ -53,18 +58,18 @@ impl Screen {
         pos
     }
     pub fn default() -> Self {
-        Screen::new(Vec2::new(10.0, 5.0))
+        Screen::new(Vec2::new(8.85, 5.0))
     }
 }
 
 const OFFSCREEN: Vec2 = Vec2::new(50.0, 50.0);
 
-#[derive(Resource)]
+#[derive(Resource, Debug)]
 pub struct Level {
-    name: String,
-    walls: Vec<Rectangle>,
-    pad: Rectangle,
-    goals: Vec<Vec2>,
+    pub name: String,
+    pub walls: Vec<Rectangle>,
+    pub pad: Rectangle,
+    pub goals: Vec<Vec2>,
 }
 
 pub fn simple() -> Level {
@@ -156,7 +161,7 @@ pub fn setup(
     mut materials: ResMut<Assets<StandardMaterial>>,
     level: Res<Level>,
 ) {
-    let screen = Screen::new(Vec2::new(10.0, 5.0));
+    let screen = Screen::default();
 
     // walls
     let wmat = wall::WallBundle::material(&mut materials);

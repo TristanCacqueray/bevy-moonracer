@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
+   sodipodi:docname="level.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="true"
+     inkscape:zoom="4"
+     inkscape:cx="339"
+     inkscape:cy="134.375"
+     inkscape:window-width="3440"
+     inkscape:window-height="1371"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     inkscape:lockguides="false">
+    <inkscape:grid
+       id="grid13"
+       units="mm"
+       originx="0"
+       originy="0"
+       spacingx="1"
+       spacingy="1"
+       empcolor="#0099e5"
+       empopacity="0.30196078"
+       color="#0099e5"
+       opacity="0.14901961"
+       empspacing="5"
+       dotted="false"
+       gridanglex="30"
+       gridanglez="30"
+       visible="true" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="28.2193 : 261.12808 : 1"
+       inkscape:vp_y="0 : 62.741685 : 0"
+       inkscape:vp_z="61.391599 : 261.12808 : 1"
+       inkscape:persp3d-origin="44.805449 : 258.02236 : 1"
+       id="perspective2" />
+  </defs>
+  <g
+     inkscape:label="Level-1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline">
+    <rect
+       style="fill:#e3dbdb;stroke-width:0.264999"
+       id="rect1"
+       width="80"
+       height="60"
+       x="0"
+       y="0"
+       inkscape:label="Screen" />
+    <rect
+       style="fill:#00ffff;stroke-width:0.260689"
+       id="rect2"
+       width="5"
+       height="60"
+       x="0"
+       y="0"
+       inkscape:label="wall-left" />
+    <rect
+       style="fill:#00ffff;stroke-width:0.260689"
+       id="rect2-5"
+       width="5"
+       height="60"
+       x="75"
+       y="0"
+       inkscape:label="wall-right" />
+    <rect
+       style="fill:#00ffff;stroke-width:0.301019"
+       id="rect2-5-2"
+       width="80"
+       height="5"
+       x="0"
+       y="55"
+       inkscape:label="wall-bottom" />
+    <rect
+       style="fill:#008000;stroke-width:0.128737"
+       id="launch-pad"
+       width="6"
+       height="1"
+       x="37"
+       y="54.5"
+       inkscape:label="launch-pad" />
+    <rect
+       style="display:inline;fill:#e9afaf;stroke:none;stroke-width:0.235294;stroke-dasharray:none;stroke-opacity:1"
+       id="rect9"
+       width="1.7647059"
+       height="1.7647058"
+       x="39.117645"
+       y="13.117647"
+       inkscape:label="goal-1" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;stroke-width:0.264999"
+       x="35.039303"
+       y="61.479012"
+       id="text11"
+       inkscape:label="name"><tspan
+         sodipodi:role="line"
+         id="tspan11"
+         style="stroke-width:0.265"
+         x="35.039303"
+         y="61.479012">Up and Down</tspan></text>
+  </g>
+  <g
+     inkscape:label="Level-2"
+     inkscape:groupmode="layer"
+     id="g8"
+     style="display:inline"
+     transform="translate(82.861818,-0.03026495)">
+    <rect
+       style="display:inline;fill:#e3dbdb;stroke-width:0.264999"
+       id="rect3"
+       width="80"
+       height="60"
+       x="17.138182"
+       y="0.030264949"
+       inkscape:label="Screen" />
+    <rect
+       style="display:inline;fill:#e9afaf;stroke-width:0.529997"
+       id="rect9-3"
+       width="2"
+       height="2"
+       x="32.138184"
+       y="13.030265"
+       inkscape:label="goal-1" />
+    <rect
+       style="fill:#00ffff;stroke-width:0.260689"
+       id="rect4"
+       width="5"
+       height="60"
+       x="17.138182"
+       y="0.030264949"
+       inkscape:label="wall-left" />
+    <rect
+       style="fill:#00ffff;stroke-width:0.260689"
+       id="rect5"
+       width="5"
+       height="60"
+       x="92.138184"
+       y="0.030264949"
+       inkscape:label="wall-right" />
+    <rect
+       style="fill:#00ffff;stroke-width:0.301019"
+       id="rect6"
+       width="80"
+       height="5"
+       x="17.138182"
+       y="55.030266"
+       inkscape:label="wall-bottom" />
+    <rect
+       style="fill:#008000;stroke-width:0.128737"
+       id="rect8"
+       width="6"
+       height="1"
+       x="54.138184"
+       y="54.530266"
+       inkscape:label="launch-pad" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;stroke-width:0.264999"
+       x="53.36388"
+       y="61.690048"
+       id="text12"
+       inkscape:label="name"><tspan
+         sodipodi:role="line"
+         id="tspan12"
+         style="stroke-width:0.265"
+         x="53.36388"
+         y="61.690048">Side Thrust</tspan></text>
+    <rect
+       style="display:inline;fill:#e9afaf;stroke-width:0.529997"
+       id="rect13"
+       width="2"
+       height="2"
+       x="80.138184"
+       y="13.030265"
+       inkscape:label="goal-2" />
+  </g>
+</svg>
