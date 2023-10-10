@@ -1,18 +1,10 @@
 use bevy::prelude::*;
 
+use crate::game_status::GameStatus;
 use crate::resources::GameResources;
 use crate::star::Star;
 use crate::{level, resources, ship, wall};
 use bevy::sprite::collide_aabb::{collide, Collision};
-
-#[derive(Clone, Eq, PartialEq, Debug, Hash, Default, States)]
-pub enum GameStatus {
-    #[default]
-    Spawned,
-    Flying,
-    GameOver,
-    Reloading,
-}
 
 pub fn display_score(
     controller: Res<GameResources>,
@@ -60,7 +52,15 @@ pub fn update_ghost(
     collider_query: Query<&wall::WallPosition>,
 ) {
     if let Some(prev_ghost) = &game_state.ghost {
-        if prev_ghost.score >= game_state.score && prev_ghost.frame_count < game_state.frame_count {
+        info!(
+            "Prev score/frame {}/{}  current {}/{}",
+            prev_ghost.score, prev_ghost.frame_count, game_state.score, game_state.frame_count
+        );
+        if prev_ghost.score > game_state.score
+            || (prev_ghost.score == game_state.score
+                && prev_ghost.frame_count <= game_state.frame_count)
+        {
+            info!("Ignored ghost");
             return;
         }
     }
@@ -70,6 +70,7 @@ pub fn update_ghost(
         &game_state.thrust_history,
         &collider_query,
     );
+    info!("Saving new ghost!");
     game_state.ghost = Some(resources::Ghost {
         score: game_state.score,
         frame_count: game_state.frame_count,
@@ -202,7 +203,7 @@ pub fn handle_input(
     let mut dy = 0.0;
 
     if keyboard_input.just_released(R) || keyboard_input.just_released(R_W) {
-        next_state.set(GameStatus::Reloading);
+        next_state.set(GameStatus::Spawning);
         return;
     }
 
@@ -221,11 +222,9 @@ pub fn handle_input(
     }
     controller.thrust = Vec2::new(dx, dy);
 
-    if controller.thrust != default() {
-        if state.get() == &GameStatus::Spawned {
-            info!("Lift off!");
-            controller.frame_count = 0;
-            next_state.set(GameStatus::Flying);
-        }
+    if controller.thrust != default() && state.get() == &GameStatus::Spawning {
+        info!("Lift off!");
+        controller.frame_count = 0;
+        next_state.set(GameStatus::Flying);
     }
 }

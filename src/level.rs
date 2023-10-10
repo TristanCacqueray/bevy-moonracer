@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 
-use crate::moonracer::GameStatus;
 use crate::{ship, star, velocity_gizmo, wall};
 
 #[derive(Debug)]
@@ -119,41 +118,6 @@ pub fn initial_ship_pos(level: &Level, screen: &Screen) -> Vec2 {
     Vec2::new(pad_pos.x, pad_pos.y - pad_size.y / 2.0)
 }
 
-pub fn reload(
-    mut game_state: ResMut<crate::resources::GameResources>,
-    mut next_state: ResMut<NextState<GameStatus>>,
-    mut query: ParamSet<(
-        Query<(&mut Transform, &mut ship::Velocity), With<ship::Ship>>,
-        Query<&mut Transform, With<ship::Ghost>>,
-        Query<&mut Transform, With<crate::star::Star>>,
-    )>,
-    level: Res<Level>,
-) {
-    let screen = Screen::default();
-
-    info!("Reloading!");
-    // should we despawn and re-setup the level instead?
-    next_state.set(GameStatus::Spawned);
-    game_state.thrust = default();
-    game_state.score = 0;
-    game_state.thrust_history.clear();
-
-    // reset star
-    let mut star_query = query.p2();
-    let mut star = star_query.single_mut();
-    star.translation = screen.goal_pos(level.goals[0]).extend(0.0);
-
-    // reset ship
-    let mut ship_query = query.p0();
-    let mut ship = ship_query.single_mut();
-    ship.0.translation = initial_ship_pos(&level, &screen).extend(0.0);
-    *ship.1 = ship::Velocity(Vec2::new(0.0, 0.0));
-
-    // reset ghost
-    let mut ghost_query = query.p1();
-    ghost_query.single_mut().translation = OFFSCREEN.extend(0.0);
-}
-
 pub fn setup(
     mut commands: Commands,
     mut game_state: ResMut<crate::resources::GameResources>,
@@ -161,6 +125,7 @@ pub fn setup(
     mut materials: ResMut<Assets<StandardMaterial>>,
     level: Res<Level>,
 ) {
+    info!("Level setup called!");
     let screen = Screen::default();
 
     // walls
@@ -174,7 +139,13 @@ pub fn setup(
         ));
     }
 
+    // Reset controller
+    game_state.thrust = default();
+    game_state.score = 0;
+    game_state.thrust_history.clear();
+
     // register goals
+    game_state.goals.clear();
     for goal in level.goals.iter().skip(1) {
         game_state.goals.push(screen.goal_pos(*goal));
     }
@@ -222,4 +193,16 @@ pub fn setup(
             ..default()
         },
     ));
+}
+
+pub fn despawn(
+    mut commands: Commands,
+    entities: Query<Entity, (Without<Camera>, Without<Window>, Without<PointLight>)>,
+) {
+    let mut count = 0;
+    for entity in &entities {
+        count += 1;
+        commands.entity(entity).despawn();
+    }
+    info!("Despawned level data {}", count);
 }

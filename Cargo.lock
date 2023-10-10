@@ -316,6 +316,7 @@ name = "bevy"
 version = "0.12.0-dev"
 source = "git+https://github.com/TristanCacqueray/bevy.git?branch=wgpu#135c54fa96de1c759724d47cfcd1be0e46ca1bcc"
 dependencies = [
+ "bevy_dylib",
  "bevy_internal",
 ]
 
@@ -490,6 +491,14 @@ dependencies = [
  "bevy_time",
  "bevy_utils",
  "sysinfo",
+]
+
+[[package]]
+name = "bevy_dylib"
+version = "0.12.0-dev"
+source = "git+https://github.com/TristanCacqueray/bevy.git?branch=wgpu#135c54fa96de1c759724d47cfcd1be0e46ca1bcc"
+dependencies = [
+ "bevy_internal",
 ]
 
 [[package]]
@@ -984,8 +993,8 @@ dependencies = [
 
 [[package]]
 name = "bevy_wasm_window_resize"
-version = "0.1.1"
-source = "git+https://github.com/TristanCacqueray/bevy_wasm_window_resize.git?branch=bevy-devel#4896c11c509ea604e3c7c57cdaaf7012e05f60be"
+version = "0.2.0"
+source = "git+https://github.com/TristanCacqueray/bevy_wasm_window_resize.git?branch=bevy-devel#32df39a13d393c59dedb308967ee3c188ce30bb6"
 dependencies = [
  "bevy",
  "web-sys",
@@ -1681,7 +1690,7 @@ dependencies = [
  "vec_map",
  "wasm-bindgen",
  "web-sys",
- "windows 0.51.1",
+ "windows 0.44.0",
 ]
 
 [[package]]
@@ -3624,25 +3633,6 @@ checksum = "e686886bc078bc1b0b600cac0147aadb815089b6e4da64016cbd754b6342700f"
 dependencies = [
  "windows-implement",
  "windows-interface",
- "windows-targets 0.48.5",
-]
-
-[[package]]
-name = "windows"
-version = "0.51.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca229916c5ee38c2f2bc1e9d8f04df975b4bd93f9955dc69fabb5d91270045c9"
-dependencies = [
- "windows-core",
- "windows-targets 0.48.5",
-]
-
-[[package]]
-name = "windows-core"
-version = "0.51.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f1f8cf84f35d2db49a46868f947758c7a1138116f7fac3bc844f43ade1292e64"
-dependencies = [
  "windows-targets 0.48.5",
 ]
 

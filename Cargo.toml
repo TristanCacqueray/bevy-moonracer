@@ -3,37 +3,44 @@ name = "bevy-moonracer"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 roxmltree = "0.18"
 itertools = "0.11"
 
+[dependencies.bevy_wasm_window_resize]
+git = "https://github.com/TristanCacqueray/bevy_wasm_window_resize.git"
+branch = "bevy-devel"
+
 [dependencies.bevy]
 git = "https://github.com/TristanCacqueray/bevy.git"
 branch = "wgpu"
-# Disable the default features if there are any that you do not want
-default-features = true
+default-features = false
 features = [
   # core
   "bevy_core_pipeline",
   "bevy_pbr",
   "bevy_render",
   "bevy_text",
+  "bevy_ui",
   "multi-threaded",
+  "bevy_winit",
 
   # native video
-  "wayland",
-  "bevy_winit",
+  # "wayland",
 
   # audio
   "bevy_audio",
   "vorbis",
 ]
 
-[dependencies.bevy_wasm_window_resize]
-git = "https://github.com/TristanCacqueray/bevy_wasm_window_resize.git"
-branch = "bevy-devel"
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies.bevy]
+git = "https://github.com/TristanCacqueray/bevy.git"
+branch = "wgpu"
+default-features = false
+features = [
+  "dynamic_linking",
+  "wayland",
+]
 
 # Enable a small amount of optimization in debug mode
 [profile.dev]
