@@ -17,6 +17,7 @@ mod app_status;
 mod game_status;
 
 mod entities;
+mod events;
 mod level;
 pub mod level_loader;
 mod moonracer;
@@ -40,6 +41,8 @@ pub fn moonracer_main() {
     App::new()
         .add_plugins(boot::Plug)
         .add_systems(Startup, setup_camera)
+        .add_plugins(events::Plug)
+        .add_plugins(resources::save::Plug)
         .add_plugins(app_status::Plug)
         .add_plugins(game_status::Plug)
         //.add_plugins(LogDiagnosticsPlugin::default())

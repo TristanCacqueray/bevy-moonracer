@@ -5,7 +5,7 @@
   inputs = {
     # nixpkgs is tracking nixpkgs-unstable
     nixpkgs.url =
-      "github:NixOS/nixpkgs/3d6ebeb283be256f008541ce2b089eb5fb0e4e01";
+      "github:NixOS/nixpkgs/b11ced7a9c1fc44392358e337c0d8f58efc97c89";
 
     flake-utils.url = "github:numtide/flake-utils";
 

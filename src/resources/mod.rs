@@ -5,6 +5,8 @@
 
 use bevy::prelude::*;
 
+pub mod save;
+
 pub const FREQ: f32 = 1.0 / 60.0;
 
 pub struct Ghost {

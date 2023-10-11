@@ -331,15 +331,17 @@ dependencies = [
 
 [[package]]
 name = "bevy-moonracer"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "bevy 0.12.0-dev",
  "bevy-ui-navigation",
+ "bevy_pkv",
  "bevy_wasm_window_resize",
  "gilrs",
  "itertools",
  "lazy_static",
  "roxmltree",
+ "serde",
 ]
 
 [[package]]
@@ -444,7 +446,7 @@ dependencies = [
  "downcast-rs",
  "fastrand 1.9.0",
  "js-sys",
- "parking_lot",
+ "parking_lot 0.12.1",
  "serde",
  "thiserror",
  "wasm-bindgen",
@@ -475,7 +477,7 @@ dependencies = [
  "futures-lite",
  "js-sys",
  "md5",
- "parking_lot",
+ "parking_lot 0.12.1",
  "ron",
  "serde",
  "thiserror",
@@ -509,7 +511,7 @@ dependencies = [
  "bevy_transform 0.12.0-dev",
  "bevy_utils 0.12.0-dev",
  "oboe",
- "parking_lot",
+ "parking_lot 0.12.1",
  "rodio",
 ]
 
@@ -1122,6 +1124,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_pkv"
+version = "0.8.0"
+source = "git+https://github.com/TristanCacqueray/bevy_pkv.git?branch=bevy-devel#32615aff8f65686eb5afbd4f16036170ececc316"
+dependencies = [
+ "bevy_ecs 0.12.0-dev",
+ "cfg_aliases",
+ "directories",
+ "rmp-serde",
+ "serde",
+ "serde_json",
+ "sled",
+ "thiserror",
+ "wasm-bindgen",
+ "web-sys",
+]
+
+[[package]]
 name = "bevy_ptr"
 version = "0.11.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1146,7 +1165,7 @@ dependencies = [
  "erased-serde",
  "glam",
  "once_cell",
- "parking_lot",
+ "parking_lot 0.12.1",
  "serde",
  "smallvec",
  "smol_str",
@@ -1166,7 +1185,7 @@ dependencies = [
  "erased-serde",
  "glam",
  "once_cell",
- "parking_lot",
+ "parking_lot 0.12.1",
  "serde",
  "smallvec",
  "smol_str",
@@ -1236,7 +1255,7 @@ dependencies = [
  "js-sys",
  "naga 0.12.3",
  "naga_oil 0.8.2",
- "parking_lot",
+ "parking_lot 0.12.1",
  "regex",
  "serde",
  "smallvec",
@@ -1283,7 +1302,7 @@ dependencies = [
  "ktx2",
  "naga 0.13.0",
  "naga_oil 0.9.0",
- "parking_lot",
+ "parking_lot 0.12.1",
  "ruzstd",
  "serde",
  "smallvec",
@@ -2080,7 +2099,7 @@ dependencies = [
  "ndk-context",
  "oboe",
  "once_cell",
- "parking_lot",
+ "parking_lot 0.12.1",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
@@ -2104,6 +2123,19 @@ checksum = "a33c2bf77f2df06183c3aa30d1e96c0695a313d4f9c453cc3762a6db39f99200"
 dependencies = [
  "cfg-if",
  "crossbeam-utils",
+]
+
+[[package]]
+name = "crossbeam-epoch"
+version = "0.9.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ae211234986c545741a7dc064309f67ee1e5ad243d0e48335adc0484d960bcc7"
+dependencies = [
+ "autocfg",
+ "cfg-if",
+ "crossbeam-utils",
+ "memoffset 0.9.0",
+ "scopeguard",
 ]
 
 [[package]]
@@ -2148,6 +2180,27 @@ name = "data-encoding"
 version = "2.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2e66c9d817f1720209181c316d28635c050fa304f9c79e47a520882661b7308"
+
+[[package]]
+name = "directories"
+version = "5.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9a49173b84e034382284f27f1af4dcbbd231ffa358c0fe316541a7337f376a35"
+dependencies = [
+ "dirs-sys",
+]
+
+[[package]]
+name = "dirs-sys"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "520f05a5cbd335fae5a99ff7a6ab8627577660ee5cfd6a94a6a929b52ff0321c"
+dependencies = [
+ "libc",
+ "option-ext",
+ "redox_users",
+ "windows-sys 0.48.0",
+]
 
 [[package]]
 name = "dispatch"
@@ -2327,6 +2380,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "aa9a19cbb55df58761df49b23516a86d432839add4af60fc256da840f66ed35b"
 
 [[package]]
+name = "fs2"
+version = "0.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9564fc758e15025b46aa6643b1b77d047d1a56a1aea6e01002ac0c7026876213"
+dependencies = [
+ "libc",
+ "winapi",
+]
+
+[[package]]
 name = "futures-core"
 version = "0.3.28"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2351,6 +2414,15 @@ dependencies = [
  "parking",
  "pin-project-lite",
  "waker-fn",
+]
+
+[[package]]
+name = "fxhash"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c31b6d751ae2c7f11320402d34e41349dd1016f8d5d45e48c4312bc8625af50c"
+dependencies = [
+ "byteorder",
 ]
 
 [[package]]
@@ -2896,6 +2968,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "memoffset"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5a634b1c61a95585bd15607c6ab0c4e5b226e695ff2800ba0cdccddf208c406c"
+dependencies = [
+ "autocfg",
+]
+
+[[package]]
 name = "metal"
 version = "0.24.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3072,7 +3153,7 @@ dependencies = [
  "bitflags 1.3.2",
  "cfg-if",
  "libc",
- "memoffset",
+ "memoffset 0.6.5",
 ]
 
 [[package]]
@@ -3085,7 +3166,7 @@ dependencies = [
  "bitflags 1.3.2",
  "cfg-if",
  "libc",
- "memoffset",
+ "memoffset 0.6.5",
 ]
 
 [[package]]
@@ -3316,12 +3397,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dd8b5dd2ae5ed71462c540258bedcb51965123ad7e7ccf4b9a8cafaa4a63576d"
 
 [[package]]
+name = "option-ext"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "04744f49eae99ab78e0d5c0b603ab218f515ea8cfe5a456d7629ad883a3b6e7d"
+
+[[package]]
 name = "orbclient"
 version = "0.3.46"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8378ac0dfbd4e7895f2d2c1f1345cab3836910baf3a300b000d04250f0c8428f"
 dependencies = [
- "redox_syscall",
+ "redox_syscall 0.3.5",
 ]
 
 [[package]]
@@ -3347,12 +3434,37 @@ checksum = "e52c774a4c39359c1d1c52e43f73dd91a75a614652c825408eec30c95a9b2067"
 
 [[package]]
 name = "parking_lot"
+version = "0.11.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7d17b78036a60663b797adeaee46f5c9dfebb86948d1255007a1d6be0271ff99"
+dependencies = [
+ "instant",
+ "lock_api",
+ "parking_lot_core 0.8.6",
+]
+
+[[package]]
+name = "parking_lot"
 version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3742b2c103b9f06bc9fff0a37ff4912935851bee6d36f3c02bcc755bcfec228f"
 dependencies = [
  "lock_api",
- "parking_lot_core",
+ "parking_lot_core 0.9.8",
+]
+
+[[package]]
+name = "parking_lot_core"
+version = "0.8.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "60a2cfe6f0ad2bfc16aefa463b497d5c7a5ecd44a23efa72aa342d90177356dc"
+dependencies = [
+ "cfg-if",
+ "instant",
+ "libc",
+ "redox_syscall 0.2.16",
+ "smallvec",
+ "winapi",
 ]
 
 [[package]]
@@ -3363,7 +3475,7 @@ checksum = "93f00c865fe7cabf650081affecd3871070f26767e7b2070a3ffae14c654b447"
 dependencies = [
  "cfg-if",
  "libc",
- "redox_syscall",
+ "redox_syscall 0.3.5",
  "smallvec",
  "windows-targets 0.48.5",
 ]
@@ -3501,11 +3613,31 @@ checksum = "a0d463f2884048e7153449a55166f91028d5b0ea53c79377099ce4e8cf0cf9bb"
 
 [[package]]
 name = "redox_syscall"
+version = "0.2.16"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fb5a58c1855b4b6819d59012155603f0b22ad30cad752600aadfcb695265519a"
+dependencies = [
+ "bitflags 1.3.2",
+]
+
+[[package]]
+name = "redox_syscall"
 version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "567664f262709473930a4bf9e51bf2ebf3348f2e748ccc50dea20646858f8f29"
 dependencies = [
  "bitflags 1.3.2",
+]
+
+[[package]]
+name = "redox_users"
+version = "0.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b033d837a7cf162d7993aded9304e30a83213c648b6e389db233191f891e5c2b"
+dependencies = [
+ "getrandom",
+ "redox_syscall 0.2.16",
+ "thiserror",
 ]
 
 [[package]]
@@ -3557,6 +3689,28 @@ name = "renderdoc-sys"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "216080ab382b992234dda86873c18d4c48358f5cfcb70fd693d7f6f2131b628b"
+
+[[package]]
+name = "rmp"
+version = "0.8.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7f9860a6cc38ed1da53456442089b4dfa35e7cedaa326df63017af88385e6b20"
+dependencies = [
+ "byteorder",
+ "num-traits",
+ "paste",
+]
+
+[[package]]
+name = "rmp-serde"
+version = "1.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bffea85eea980d8a74453e5d02a8d93028f3c34725de143085a844ebe953258a"
+dependencies = [
+ "byteorder",
+ "rmp",
+ "serde",
+]
 
 [[package]]
 name = "rodio"
@@ -3711,6 +3865,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8f92a496fb766b417c996b9c5e57daf2f7ad3b0bebe1ccfca4856390e3d3bb67"
 dependencies = [
  "autocfg",
+]
+
+[[package]]
+name = "sled"
+version = "0.34.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7f96b4737c2ce5987354855aed3797279def4ebf734436c6aa4552cf8e169935"
+dependencies = [
+ "crc32fast",
+ "crossbeam-epoch",
+ "crossbeam-utils",
+ "fs2",
+ "fxhash",
+ "libc",
+ "log",
+ "parking_lot 0.11.2",
 ]
 
 [[package]]
@@ -4268,7 +4438,7 @@ dependencies = [
  "js-sys",
  "log",
  "naga 0.12.3",
- "parking_lot",
+ "parking_lot 0.12.1",
  "profiling",
  "raw-window-handle",
  "smallvec",
@@ -4292,7 +4462,7 @@ dependencies = [
  "js-sys",
  "log",
  "naga 0.13.0",
- "parking_lot",
+ "parking_lot 0.12.1",
  "profiling",
  "raw-window-handle",
  "smallvec",
@@ -4317,7 +4487,7 @@ dependencies = [
  "codespan-reporting",
  "log",
  "naga 0.12.3",
- "parking_lot",
+ "parking_lot 0.12.1",
  "profiling",
  "raw-window-handle",
  "rustc-hash",
@@ -4340,7 +4510,7 @@ dependencies = [
  "codespan-reporting",
  "log",
  "naga 0.13.0",
- "parking_lot",
+ "parking_lot 0.12.1",
  "profiling",
  "raw-window-handle",
  "rustc-hash",
@@ -4379,7 +4549,7 @@ dependencies = [
  "metal 0.24.0",
  "naga 0.12.3",
  "objc",
- "parking_lot",
+ "parking_lot 0.12.1",
  "profiling",
  "range-alloc",
  "raw-window-handle",
@@ -4420,7 +4590,7 @@ dependencies = [
  "metal 0.26.0",
  "naga 0.13.0",
  "objc",
- "parking_lot",
+ "parking_lot 0.12.1",
  "profiling",
  "range-alloc",
  "raw-window-handle",
@@ -4698,7 +4868,7 @@ dependencies = [
  "orbclient",
  "percent-encoding",
  "raw-window-handle",
- "redox_syscall",
+ "redox_syscall 0.3.5",
  "sctk-adwaita",
  "smithay-client-toolkit",
  "wasm-bindgen",

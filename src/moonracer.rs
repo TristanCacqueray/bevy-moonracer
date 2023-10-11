@@ -20,6 +20,7 @@ pub fn display_score(
         Query<&mut Transform, With<ship::Ship>>,
         Query<&mut Transform, With<goal::Goal>>,
     )>,
+    mut event_writer: EventWriter<crate::events::LevelCompleted>,
 ) {
     let mut text = text.single_mut();
     let text = &mut text.sections[0].value;
@@ -27,6 +28,8 @@ pub fn display_score(
 
     query.p0().single_mut().translation = [50.0, 50.0, 50.0].into();
     query.p1().single_mut().translation = [50.0, 50.0, 50.0].into();
+
+    event_writer.send_default();
 }
 
 pub fn check_goal(
