@@ -19,8 +19,11 @@ pub struct GameResources {
     pub frame_count: usize,
     pub score: usize,
     pub goals: Vec<Vec2>,
+    pub launch_pad: (Vec3, Vec2),
     pub thrust_history: Vec<Vec2>,
     pub ghost: Option<Ghost>,
+
+    pub current_level: usize,
 }
 
 impl GameResources {
@@ -41,6 +44,8 @@ impl Default for GameResources {
             goals: vec![],
             thrust_history: vec![],
             ghost: None,
+            current_level: 0,
+            launch_pad: (Vec3::default(), Vec2::default()),
         }
     }
 }

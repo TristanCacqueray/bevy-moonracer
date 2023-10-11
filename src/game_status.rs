@@ -29,7 +29,7 @@ impl Plugin for Plug {
     fn build(&self, app: &mut App) {
         app.add_state::<GameStatus>()
             .init_resource::<resources::GameResources>()
-            .insert_resource(level::simple())
+            .insert_resource(crate::level_loader::load())
             .add_systems(
                 OnEnter(GameStatus::Spawning),
                 (moonracer::update_ghost, level::despawn, level::setup).chain(),

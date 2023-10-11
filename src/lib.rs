@@ -36,7 +36,6 @@ mod boot {
 }
 
 pub fn moonracer_main() {
-    let _ = level_loader::load();
     App::new()
         .add_plugins(boot::Plug)
         .add_systems(Startup, setup_camera)

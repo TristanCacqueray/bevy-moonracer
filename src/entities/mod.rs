@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 pub mod goal;
+pub mod launch_pad;
 pub mod ship;
 pub mod velocity_gizmo;
 pub mod wall;

@@ -43,26 +43,36 @@ pub fn check_goal(
     *text = format!("Flying: {} {}", controller.score, controller.elapsed());
 
     let ship_pos = query.p0().single().translation.truncate();
-    let mut goal_query = query.p1();
-    let mut goal = goal_query.single_mut();
-    let goal_pos = goal.translation.truncate();
 
-    if Goal::reached(goal_pos, ship_pos) {
-        info!("Reached goal! {}", controller.score);
-        if let Some(next_goal) = controller.goals.get(controller.score) {
-            goal.translation = next_goal.extend(0.0);
-            controller.score += 1;
-        } else {
+    if controller.score >= controller.goals.len() {
+        // Check if back on the landing pad
+        let pad = controller.launch_pad;
+        if collide(ship_pos.extend(0.0), ship::Ship::size(), pad.0, pad.1).is_some() {
             next_state.set(GameStatus::GameOver);
+        }
+    } else {
+        let mut goal_query = query.p1();
+        let mut goal = goal_query.single_mut();
+        let goal_pos = goal.translation.truncate();
+
+        if Goal::reached(goal_pos, ship_pos) {
+            info!("Reached goal! {}", controller.score);
+            controller.score += 1;
+            if let Some(next_goal) = controller.goals.get(controller.score) {
+                goal.translation = next_goal.extend(0.0);
+            } else {
+                goal.translation = level::OFFSCREEN.extend(0.0);
+            }
         }
     }
 }
 
 pub fn update_ghost(
     mut game_state: ResMut<crate::resources::GameResources>,
-    level: Res<level::Level>,
+    levels: Res<level::Levels>,
     collider_query: Query<&wall::WallPosition>,
 ) {
+    let level = levels.0.get(game_state.current_level).unwrap();
     if let Some(prev_ghost) = &game_state.ghost {
         info!(
             "Prev score/frame {}/{}  current {}/{}",

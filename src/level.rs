@@ -66,7 +66,7 @@ impl Screen {
     }
 }
 
-const OFFSCREEN: Vec2 = Vec2::new(50.0, 50.0);
+pub const OFFSCREEN: Vec2 = Vec2::new(50.0, 50.0);
 
 #[derive(Resource, Debug)]
 pub struct Level {
@@ -76,7 +76,10 @@ pub struct Level {
     pub goals: Vec<Vec2>,
 }
 
-pub fn simple() -> Level {
+#[derive(Resource)]
+pub struct Levels(pub Vec<Level>);
+
+pub fn _simple() -> Level {
     let walls = vec![
         Rectangle {
             // left wall
@@ -128,10 +131,12 @@ pub fn setup(
     mut game_state: ResMut<crate::resources::GameResources>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
-    level: Res<Level>,
+    levels: Res<Levels>,
 ) {
     info!("Level setup called!");
     let screen = Screen::default();
+
+    let level = levels.0.get(game_state.current_level).unwrap();
 
     // walls
     let wmat = wall::WallBundle::material(&mut materials);
@@ -151,16 +156,15 @@ pub fn setup(
 
     // register goals
     game_state.goals.clear();
-    for goal in level.goals.iter().skip(1) {
+    for goal in level.goals.iter() {
         game_state.goals.push(screen.goal_pos(*goal));
     }
 
-    let pad_mat = materials.add(Color::rgba(0.0, 1.0, 0.0, 0.5).into());
+    let pad_mat = launch_pad::PadBundle::material(&mut materials);
     let (pad_pos, pad_size) = screen.center_pos(&level.pad);
-    commands.spawn((
-        wall::WallBundle::new(&mut meshes, &pad_mat, pad_pos, pad_size),
-        wall::Wall,
-    ));
+    let pad_bundle = launch_pad::PadBundle::new(&mut meshes, &pad_mat, pad_pos, pad_size);
+    game_state.launch_pad = (pad_pos.extend(0.0), pad_size);
+    commands.spawn(pad_bundle);
 
     // spawn first goal
     let goal_pos = screen.goal_pos(level.goals[0]);

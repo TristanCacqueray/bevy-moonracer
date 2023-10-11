@@ -9,7 +9,7 @@
 use bevy::math::Vec2;
 use roxmltree::{Document, Node};
 
-use crate::level::{Level, Rectangle};
+use crate::level::{Level, Levels, Rectangle};
 
 fn load_rectangle(node: Node, offset: Vec2) -> Option<Rectangle> {
     let parse_attr = |name| get_attr(&node, name)?.parse().ok();
@@ -88,7 +88,7 @@ fn load_top_level(node: &Node) -> Option<(usize, Level)> {
     }
 }
 
-pub fn load() -> Vec<Level> {
+pub fn load() -> Levels {
     let data = include_str!("levels.svg");
     let doc = Document::parse(data).unwrap();
     if let Some(svg) = doc
@@ -102,7 +102,7 @@ pub fn load() -> Vec<Level> {
             .filter(|node| node.tag_name().name() == "g")
             .filter_map(|node| load_top_level(&node))
             .collect();
-        sort_vec(levels)
+        Levels(sort_vec(levels))
     } else {
         panic!("Couln't find svg root node")
     }
