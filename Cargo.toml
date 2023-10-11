@@ -2,6 +2,7 @@
 name = "bevy-moonracer"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
 
 [dependencies]
 roxmltree = "0.18"
@@ -52,5 +53,5 @@ opt-level = 3
 
 [[example]]
 name = "level"
-path = "src/test_level_loader.rs"
+path = "src/level_loader_test.rs"
 doc-scrape-examples = true

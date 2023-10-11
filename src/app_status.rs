@@ -1,4 +1,9 @@
-//! This plugin defines the main app status.
+// Copyright (C) 2023 by Tristan de Cacqueray
+// SPDX-License-Identifier: MIT
+
+//! This module defines the main app status.
+//!
+//! Checkout the bevy's example: games/game_menu.rs
 
 use bevy::prelude::*;
 

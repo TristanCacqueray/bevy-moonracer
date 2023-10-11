@@ -1,6 +1,11 @@
+// Copyright (C) 2023 by Tristan de Cacqueray
+// SPDX-License-Identifier: MIT
+
+//! This module defines the level structure and how to render it.
+
 use bevy::prelude::*;
 
-use crate::{ship, star, velocity_gizmo, wall};
+use crate::entities::*;
 
 #[derive(Debug)]
 pub struct Rectangle {
@@ -161,8 +166,8 @@ pub fn setup(
     let goal_pos = screen.goal_pos(level.goals[0]);
     info!("goal: {}", goal_pos);
     commands.spawn((
-        star::StarBundle::new(&mut meshes, &mut materials, goal_pos),
-        star::Star,
+        goal::GoalBundle::new(&mut meshes, &mut materials, goal_pos),
+        goal::Goal,
     ));
 
     // spawn the ship on the pad

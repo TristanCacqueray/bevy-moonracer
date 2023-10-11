@@ -1,9 +1,15 @@
-//! This plugin defines the main game status.
+// Copyright (C) 2023 by Tristan de Cacqueray
+// SPDX-License-Identifier: MIT
+
+//! This module defines the main game status.
+//!
+//! Checkout the bevy's example: ecs/ecs_guide.rs
 
 use bevy::prelude::*;
 
 use crate::app_status::AppStatus;
-use crate::{level, moonracer, resources, star, velocity_gizmo};
+use crate::entities::*;
+use crate::{level, moonracer, resources};
 
 #[derive(Clone, Eq, PartialEq, Debug, Hash, Default, States)]
 pub enum GameStatus {
@@ -34,14 +40,14 @@ impl Plugin for Plug {
             )
             .add_systems(
                 Update,
-                (star::animate, velocity_gizmo::update_gizmo)
+                (goal::animate, velocity_gizmo::update_gizmo)
                     .run_if(in_playing_state(GameStatus::Flying)),
             )
             // Configure how frequently our gameplay systems are run
             .insert_resource(FixedTime::new_from_secs(1.0 / 60.0))
             .add_systems(
                 FixedUpdate,
-                ((moonracer::move_ship, moonracer::check_star).after(moonracer::handle_input))
+                ((moonracer::move_ship, moonracer::check_goal).after(moonracer::handle_input))
                     .run_if(in_playing_state(GameStatus::Flying)),
             )
             .add_systems(OnEnter(GameStatus::GameOver), moonracer::display_score);

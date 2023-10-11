@@ -1,3 +1,8 @@
+// Copyright (C) 2023 by Tristan de Cacqueray
+// SPDX-License-Identifier: MIT
+
+//! This module contains the wall bundle.
+
 use bevy::prelude::*;
 
 #[derive(Debug, Component)]

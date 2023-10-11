@@ -1,29 +1,40 @@
+// Copyright (C) 2023 by Tristan de Cacqueray
+// SPDX-License-Identifier: MIT
+
+//! This module implements the core game mechanics.
+
 use bevy::prelude::*;
 
+use crate::entities::goal::Goal;
+use crate::entities::*;
 use crate::game_status::GameStatus;
+use crate::level;
+use crate::resources;
 use crate::resources::GameResources;
-use crate::star::Star;
-use crate::{level, resources, ship, wall};
 use bevy::sprite::collide_aabb::{collide, Collision};
 
 pub fn display_score(
     controller: Res<GameResources>,
     mut text: Query<&mut Text>,
-    mut ship_query: Query<&mut Transform, With<crate::ship::Ship>>,
-    mut star_query: Query<&mut Transform, (With<crate::star::Star>, Without<crate::ship::Ship>)>,
+    mut query: ParamSet<(
+        Query<&mut Transform, With<ship::Ship>>,
+        Query<&mut Transform, With<goal::Goal>>,
+    )>,
 ) {
     let mut text = text.single_mut();
     let text = &mut text.sections[0].value;
     *text = format!("GG! {} (press 'r' to try again)", controller.elapsed());
 
-    star_query.single_mut().translation = [50.0, 50.0, 50.0].into();
-    ship_query.single_mut().translation = [50.0, 50.0, 50.0].into();
+    query.p0().single_mut().translation = [50.0, 50.0, 50.0].into();
+    query.p1().single_mut().translation = [50.0, 50.0, 50.0].into();
 }
 
-pub fn check_star(
+pub fn check_goal(
     mut controller: ResMut<GameResources>,
-    ship_query: Query<&Transform, With<crate::ship::Ship>>,
-    mut star_query: Query<&mut Transform, (With<crate::star::Star>, Without<crate::ship::Ship>)>,
+    mut query: ParamSet<(
+        Query<&Transform, With<ship::Ship>>,
+        Query<&mut Transform, With<goal::Goal>>,
+    )>,
     mut text: Query<&mut Text>,
     mut next_state: ResMut<NextState<GameStatus>>,
 ) {
@@ -31,14 +42,15 @@ pub fn check_star(
     let text = &mut text.sections[0].value;
     *text = format!("Flying: {} {}", controller.score, controller.elapsed());
 
-    let ship_pos = ship_query.single().translation.truncate();
-    let mut star = star_query.single_mut();
-    let star_pos = star.translation.truncate();
+    let ship_pos = query.p0().single().translation.truncate();
+    let mut goal_query = query.p1();
+    let mut goal = goal_query.single_mut();
+    let goal_pos = goal.translation.truncate();
 
-    if Star::reached(star_pos, ship_pos) {
-        info!("Reached star! {}", controller.score);
-        if let Some(next_start) = controller.goals.get(controller.score) {
-            star.translation = next_start.extend(0.0);
+    if Goal::reached(goal_pos, ship_pos) {
+        info!("Reached goal! {}", controller.score);
+        if let Some(next_goal) = controller.goals.get(controller.score) {
+            goal.translation = next_goal.extend(0.0);
             controller.score += 1;
         } else {
             next_state.set(GameStatus::GameOver);

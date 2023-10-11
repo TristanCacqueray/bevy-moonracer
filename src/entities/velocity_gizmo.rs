@@ -1,6 +1,11 @@
+// Copyright (C) 2023 by Tristan de Cacqueray
+// SPDX-License-Identifier: MIT
+
+//! This module contains the velocity gizmo bundle;
+
 use bevy::prelude::*;
 
-use crate::ship;
+use crate::entities::ship;
 
 #[derive(Component)]
 pub struct VelocityGizmo;

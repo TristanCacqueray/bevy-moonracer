@@ -1,22 +1,27 @@
+// Copyright (C) 2023 by Tristan de Cacqueray
+// SPDX-License-Identifier: MIT
+
+//! This module contains the goal bundle.
+
 use bevy::prelude::*;
 
 #[derive(Component)]
-pub struct Star;
+pub struct Goal;
 
 #[derive(Bundle)]
-pub struct StarBundle {
+pub struct GoalBundle {
     pub pbr: PbrBundle,
 }
 
-pub const STAR_SIZE: f32 = 0.1;
+pub const GOAL_SIZE: f32 = 0.1;
 
-impl Star {
+impl Goal {
     pub fn reached(position: Vec2, ship: Vec2) -> bool {
-        (position.x - ship.x).abs() <= STAR_SIZE && (position.y - ship.y).abs() <= STAR_SIZE
+        (position.x - ship.x).abs() <= GOAL_SIZE && (position.y - ship.y).abs() <= GOAL_SIZE
     }
 }
 
-impl StarBundle {
+impl GoalBundle {
     pub fn new(
         meshes: &mut ResMut<Assets<Mesh>>,
         materials: &mut ResMut<Assets<StandardMaterial>>,
@@ -26,7 +31,7 @@ impl StarBundle {
             pbr: PbrBundle {
                 mesh: meshes.add(
                     shape::Cube {
-                        size: STAR_SIZE,
+                        size: GOAL_SIZE,
                         // subdivisions: 1,
                     }
                     .try_into()
@@ -49,9 +54,9 @@ impl StarBundle {
     }
 }
 
-pub fn animate(time: Res<Time>, mut star_query: Query<&mut Transform, With<crate::star::Star>>) {
+pub fn animate(time: Res<Time>, mut goal_query: Query<&mut Transform, With<Goal>>) {
     let delta = time.delta_seconds();
-    for mut star in star_query.iter_mut() {
-        star.rotate_y(delta);
+    for mut goal in goal_query.iter_mut() {
+        goal.rotate_y(delta);
     }
 }

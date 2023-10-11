@@ -1,3 +1,11 @@
+// Copyright (C) 2023 by Tristan de Cacqueray
+// SPDX-License-Identifier: MIT
+
+//! This module implements the svg level loader.
+//!
+//! Note that [usvg](https://docs.rs/usvg) is not usable because of https://github.com/RazrFalcon/resvg/issues/588.
+//! Thus this module uses a regular xml library to manually load the data and normalize the translation.
+
 use bevy::math::Vec2;
 use roxmltree::{Document, Node};
 

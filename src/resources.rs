@@ -1,4 +1,8 @@
-//! This module contains the global state
+// Copyright (C) 2023 by Tristan de Cacqueray
+// SPDX-License-Identifier: MIT
+
+//! This module contains the global state.
+
 use bevy::prelude::*;
 
 pub const FREQ: f32 = 1.0 / 60.0;

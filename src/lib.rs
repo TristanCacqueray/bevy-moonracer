@@ -1,4 +1,9 @@
-//! The moonracer entrypoint
+// Copyright (C) 2023 by Tristan de Cacqueray
+// SPDX-License-Identifier: MIT
+
+//! The moonracer entry point
+//!
+//! Checkout the bevy's example: app/plugin.rs
 
 #![allow(clippy::type_complexity)]
 
@@ -11,14 +16,11 @@ use bevy::{
 mod app_status;
 mod game_status;
 
+mod entities;
 mod level;
 pub mod level_loader;
 mod moonracer;
 mod resources;
-mod ship;
-mod star;
-mod velocity_gizmo;
-mod wall;
 
 mod boot {
     use bevy::prelude::*;
