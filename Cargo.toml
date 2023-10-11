@@ -1,12 +1,21 @@
 [package]
 name = "bevy-moonracer"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 license = "MIT"
 
 [dependencies]
 roxmltree = "0.18"
 itertools = "0.11"
+lazy_static = "*"
+gilrs = "*"
+
+[dependencies."bevy-ui-navigation"]
+git = "https://github.com/TristanCacqueray/ui-navigation.git"
+branch = "bevy-devel"
+default-features = false
+features = [ "bevy_ui", "bevy_reflect" ]
+# Wait for bevy 0.12 release before enabling "pointer_focus"
 
 [dependencies.bevy_wasm_window_resize]
 git = "https://github.com/TristanCacqueray/bevy_wasm_window_resize.git"
@@ -25,6 +34,9 @@ features = [
   "bevy_ui",
   "multi-threaded",
   "bevy_winit",
+
+  # gamepad
+  "bevy_gilrs",
 
   # native video
   # "wayland",
@@ -54,4 +66,9 @@ opt-level = 3
 [[example]]
 name = "level"
 path = "src/level_loader_test.rs"
+doc-scrape-examples = true
+
+[[example]]
+name = "gamepad"
+path = "src/gamepad_test.rs"
 doc-scrape-examples = true

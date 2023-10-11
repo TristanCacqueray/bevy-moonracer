@@ -24,6 +24,12 @@ fn in_playing_state(gs: GameStatus) -> impl Condition<()> {
     in_state(AppStatus::Playing).and_then(in_state(gs))
 }
 
+impl GameStatus {
+    pub fn is_playing(&self) -> bool {
+        *self != GameStatus::Waiting
+    }
+}
+
 pub struct Plug;
 impl Plugin for Plug {
     fn build(&self, app: &mut App) {
