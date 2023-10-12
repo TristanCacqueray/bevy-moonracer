@@ -7,7 +7,7 @@
 
 use bevy::prelude::*;
 
-use bevy_ui_navigation::prelude::{NavEvent, NavEventReaderExt, NavRequestSystem};
+use bevy_ui_navigation::prelude::{NavEvent, NavEventReaderExt, NavRequest, NavRequestSystem};
 
 #[derive(Clone, Copy, Eq, PartialEq, Debug, Hash, Default, States)]
 pub enum AppStatus {
@@ -28,7 +28,13 @@ impl Plugin for Plug {
         app.add_plugins(crate::ui::button::Plug)
             .add_state::<AppStatus>()
             .add_systems(Startup, load_app_status_from_env)
-            .add_systems(Update, handle_nav_events.after(NavRequestSystem))
+            .add_systems(
+                Update,
+                (
+                    handle_nav_events.after(NavRequestSystem),
+                    handle_nav_requests.after(NavRequestSystem),
+                ),
+            )
             .add_systems(Update, handle_app_input)
             .add_plugins((splash::Plug, select::Plug, menu::Plug, pause::Plug));
     }
@@ -41,6 +47,31 @@ pub enum MenuAction {
     SelectMenu(AppStatus),
     LoadLevel(usize),
     Quit,
+}
+
+fn handle_nav_requests(
+    mut events: EventReader<NavRequest>,
+    mut app_exit_events: EventWriter<bevy::app::AppExit>,
+    app_status: Res<State<AppStatus>>,
+    mut next_app_status: ResMut<NextState<AppStatus>>,
+) {
+    for event in events.read() {
+        if event == &NavRequest::Cancel {
+            let app_status = app_status.get();
+            let next_status = match *app_status {
+                AppStatus::SelectLevel => Some(AppStatus::Menu),
+                AppStatus::Paused => Some(AppStatus::Playing),
+                AppStatus::Menu => {
+                    app_exit_events.send(bevy::app::AppExit);
+                    None
+                }
+                _ => None,
+            };
+            if let Some(status) = next_status {
+                next_app_status.set(status)
+            }
+        };
+    }
 }
 
 fn handle_nav_events(
@@ -60,7 +91,10 @@ fn handle_nav_events(
                 next_game_status.set(GameStatus::Spawning);
             }
             MenuAction::Quit => app_exit_events.send(bevy::app::AppExit),
-            MenuAction::Restart => next_game_status.set(GameStatus::Spawning),
+            MenuAction::Restart => {
+                next_app_status.set(AppStatus::Playing);
+                next_game_status.set(GameStatus::Spawning);
+            }
             MenuAction::SelectMenu(app_status) => {
                 next_app_status.set(*app_status);
                 // despawn level?
@@ -72,9 +106,10 @@ fn handle_nav_events(
                 next_game_status.set(GameStatus::Spawning);
             }
         },
-    )
+    );
 }
 
+const ESC: ScanCode = ScanCode(1);
 const P: ScanCode = ScanCode(25);
 const P_W: ScanCode = ScanCode(80);
 
@@ -87,7 +122,7 @@ fn handle_app_input(
 ) {
     for ev in keyboard_input.get_just_pressed() {
         match *ev {
-            P | P_W => {
+            ESC | P | P_W => {
                 if game_status.is_playing() {
                     let next_status = if app_status.get() == &AppStatus::Paused {
                         AppStatus::Playing

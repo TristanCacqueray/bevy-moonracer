@@ -25,14 +25,14 @@ mod resources;
 mod ui;
 
 mod boot {
+    //! This module initialize the engine.
     use bevy::prelude::*;
     pub struct Plug;
     impl Plugin for Plug {
         fn build(&self, app: &mut App) {
             app.add_plugins(DefaultPlugins)
                 .insert_resource(ClearColor(Color::BLACK))
-                .add_plugins(bevy_wasm_window_resize::WindowResizePlugin)
-                .add_systems(Update, bevy::window::close_on_esc);
+                .add_plugins(bevy_wasm_window_resize::WindowResizePlugin);
         }
     }
 }
