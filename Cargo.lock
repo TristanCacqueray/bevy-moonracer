@@ -337,6 +337,7 @@ dependencies = [
  "bevy-ui-navigation",
  "bevy_pkv",
  "bevy_wasm_window_resize",
+ "console_error_panic_hook",
  "gilrs",
  "itertools",
  "lazy_static",

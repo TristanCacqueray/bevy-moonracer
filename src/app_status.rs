@@ -76,6 +76,7 @@ fn handle_nav_events(
 }
 
 const P: ScanCode = ScanCode(25);
+const P_W: ScanCode = ScanCode(80);
 
 fn handle_app_input(
     keyboard_input: Res<Input<ScanCode>>,
@@ -86,7 +87,7 @@ fn handle_app_input(
 ) {
     for ev in keyboard_input.get_just_pressed() {
         match *ev {
-            P => {
+            P | P_W => {
                 if game_status.is_playing() {
                     let next_status = if app_status.get() == &AppStatus::Paused {
                         AppStatus::Playing
