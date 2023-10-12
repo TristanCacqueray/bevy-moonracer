@@ -63,8 +63,6 @@
           CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
         });
         web = craneLib.buildTrunkPackage (web-info // {
-          src = src;
-          cargoToml = ./Cargo.toml;
           cargoArtifacts = cargoArtifactsWasm;
           trunkIndexPath = "./index.html";
           # Fixup the dist output for a publishable package.
@@ -101,6 +99,7 @@
             [ pkg-config ] ++ pkgs.lib.catAttrs system [ linker ];
 
           LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath buildInputs;
+          XCURSOR_PATH = "/usr/share/icons/";
         };
       });
 }

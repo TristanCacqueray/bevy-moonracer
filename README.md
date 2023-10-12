@@ -16,7 +16,7 @@ Online demo: [https://tristancacqueray.github.io/bevy-moonracer](https://tristan
 
 ## Features and roadmap
 
-The goal of this project is to implement all the core piece of a classic video games.
+The goal of this project is to implement the core pieces of a classic video game.
 This can be used by beginners to get some starting points for their own game.
 
 ### Game mechanics

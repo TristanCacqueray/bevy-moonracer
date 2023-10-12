@@ -1,6 +1,6 @@
 [package]
 name = "bevy-moonracer"
-version = "0.1.2"
+version = "0.1.4"
 edition = "2021"
 license = "MIT"
 
@@ -13,24 +13,21 @@ serde = { version = "1", features = ["rc"] }
 
 [dependencies.bevy_pkv]
 git = "https://github.com/TristanCacqueray/bevy_pkv.git"
-branch = "bevy-devel"
+rev = "ccf45f16a548b3583a28d1a0337e38cabeb970fc"
 default-features = false
 features = [ "bevy", "sled" ] # redb do not link with mold: error: undefined symbol: _$LT$redb..tree_store...
 
 [dependencies."bevy-ui-navigation"]
 git = "https://github.com/TristanCacqueray/ui-navigation.git"
-branch = "bevy-devel"
-default-features = false
-features = [ "bevy_ui", "bevy_reflect" ]
-# Wait for bevy 0.12 release before enabling "pointer_focus"
+rev = "0474c3206abb25d234a07af6cf6e1b596a01b449"
 
 [dependencies.bevy_wasm_window_resize]
 git = "https://github.com/TristanCacqueray/bevy_wasm_window_resize.git"
-branch = "bevy-devel"
+rev = "423adf8de011f3cd7da24b1bd1ff3a28d4efaef5"
 
 [dependencies.bevy]
-git = "https://github.com/TristanCacqueray/bevy.git"
-branch = "wgpu"
+git = "https://github.com/bevyengine/bevy.git"
+rev = "35073cf7aa9eaf748e167c103921a6764fcedfb1"
 default-features = false
 features = [
   # core
@@ -45,17 +42,14 @@ features = [
   # gamepad
   "bevy_gilrs",
 
-  # native video
-  "wayland",
-
   # audio
   "bevy_audio",
   "vorbis",
 ]
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies.bevy]
-git = "https://github.com/TristanCacqueray/bevy.git"
-branch = "wgpu"
+git = "https://github.com/bevyengine/bevy.git"
+rev = "35073cf7aa9eaf748e167c103921a6764fcedfb1"
 default-features = false
 features = [
   "dynamic_linking",

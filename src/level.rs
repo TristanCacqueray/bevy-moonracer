@@ -126,6 +126,9 @@ pub fn initial_ship_pos(level: &Level, screen: &Screen) -> Vec2 {
     Vec2::new(pad_pos.x, pad_pos.y - pad_size.y / 2.0)
 }
 
+#[derive(Component)]
+pub struct LevelComponent;
+
 pub fn setup(
     mut commands: Commands,
     mut game_state: ResMut<crate::resources::GameResources>,
@@ -147,6 +150,7 @@ pub fn setup(
         commands.spawn((
             wall::WallBundle::new(&mut meshes, &wmat, pos, sz),
             wall::Wall,
+            LevelComponent,
         ));
     }
 
@@ -166,7 +170,7 @@ pub fn setup(
     let pad_bundle =
         launch_pad::PadBundle::new(&mut meshes, &pad_materials.idle, pad_pos, pad_size);
     game_state.launch_pad = (pad_pos.extend(0.0), pad_size);
-    commands.spawn((pad_bundle, launch_pad::Pad));
+    commands.spawn((pad_bundle, launch_pad::Pad, LevelComponent));
 
     // spawn first goal
     let goal_pos = screen.goal_pos(level.goals[0]);
@@ -174,6 +178,7 @@ pub fn setup(
     commands.spawn((
         goal::GoalBundle::new(&mut meshes, &mut materials, goal_pos),
         goal::Goal,
+        LevelComponent,
     ));
 
     // spawn the ship on the pad
@@ -182,6 +187,7 @@ pub fn setup(
         .spawn((
             ship::ShipBundle::new(&mut meshes, &mut materials, ship_pos, 0.0),
             ship::Ship,
+            LevelComponent,
         ))
         .with_children(|parent| {
             parent.spawn((
@@ -193,27 +199,28 @@ pub fn setup(
     commands.spawn((
         ship::ShipBundle::new(&mut meshes, &mut materials, OFFSCREEN, 4.5),
         ship::Ghost,
+        LevelComponent,
     ));
 
     // example instructions
-    commands.spawn(TextBundle::from_section(
-        &level.name,
-        TextStyle {
-            font_size: 20.0,
-            color: Color::WHITE,
-            ..default()
-        },
+    commands.spawn((
+        TextBundle::from_section(
+            &level.name,
+            TextStyle {
+                font_size: 20.0,
+                color: Color::WHITE,
+                ..default()
+            },
+        ),
+        LevelComponent,
     ));
 }
 
-pub fn despawn(
-    mut commands: Commands,
-    entities: Query<Entity, (Without<Camera>, Without<Window>, Without<PointLight>)>,
-) {
+pub fn despawn(mut commands: Commands, entities: Query<Entity, With<LevelComponent>>) {
     let mut count = 0;
     for entity in &entities {
         count += 1;
-        commands.entity(entity).despawn();
+        commands.entity(entity).despawn_recursive();
     }
     info!("Despawned level data {}", count);
 }
