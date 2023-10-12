@@ -45,7 +45,7 @@ This can be used by beginners to get some starting points for their own game.
 ### Inputs
 
 - [x] Keyboard wasd/arrow
-- [ ] Gamepad
+- [x] Gamepad
 - [ ] Touchscreen
 
 ### Sounds

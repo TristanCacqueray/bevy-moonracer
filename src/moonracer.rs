@@ -5,6 +5,7 @@
 
 use bevy::prelude::*;
 
+use crate::app_status::AppStatus;
 use crate::entities::goal::Goal;
 use crate::entities::*;
 use crate::game_status::GameStatus;
@@ -223,6 +224,9 @@ pub fn handle_input(
     state: Res<State<GameStatus>>,
     mut next_state: ResMut<NextState<GameStatus>>,
     keyboard_input: Res<Input<ScanCode>>,
+    gamepad_button_input: Res<Input<GamepadButton>>,
+    mut next_app_status: ResMut<NextState<AppStatus>>,
+    // gamepad_axis_input: Res<Input<GamepadAxis>>,
 ) {
     let mut dx = 0.0;
     let mut dy = 0.0;
@@ -230,6 +234,24 @@ pub fn handle_input(
     if keyboard_input.just_released(R) || keyboard_input.just_released(R_W) {
         next_state.set(GameStatus::Spawning);
         return;
+    }
+
+    for ev in gamepad_button_input.get_pressed() {
+        match ev.button_type {
+            GamepadButtonType::DPadLeft => dx = -1.0,
+            GamepadButtonType::DPadRight => dx = 1.0,
+            GamepadButtonType::DPadUp => dy = 1.0,
+            GamepadButtonType::DPadDown => dy = -1.0,
+            GamepadButtonType::North => {
+                next_state.set(GameStatus::Spawning);
+                return;
+            }
+            GamepadButtonType::Start => {
+                next_app_status.set(AppStatus::Paused);
+                return;
+            }
+            _ => {}
+        }
     }
 
     for ev in keyboard_input.get_pressed() {
