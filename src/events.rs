@@ -5,12 +5,15 @@
 
 use bevy::prelude::*;
 
-#[derive(Event, Default)]
-pub struct LevelCompleted;
+#[derive(Event)]
+pub struct NewHighscore {
+    pub level: usize,
+    pub score: usize,
+}
 
 pub struct Plug;
 impl Plugin for Plug {
     fn build(&self, app: &mut App) {
-        app.add_event::<LevelCompleted>();
+        app.add_event::<NewHighscore>();
     }
 }

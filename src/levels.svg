@@ -8,7 +8,7 @@
    version="1.1"
    id="svg1"
    inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
-   sodipodi:docname="level.svg"
+   sodipodi:docname="levels.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -25,14 +25,14 @@
      inkscape:document-units="mm"
      showgrid="true"
      inkscape:zoom="4"
-     inkscape:cx="339"
-     inkscape:cy="134.375"
+     inkscape:cx="339.125"
+     inkscape:cy="519.125"
      inkscape:window-width="3440"
      inkscape:window-height="1371"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g29"
      inkscape:lockguides="false">
     <inkscape:grid
        id="grid13"
@@ -65,7 +65,8 @@
      inkscape:label="Level-1"
      inkscape:groupmode="layer"
      id="layer1"
-     style="display:inline">
+     style="display:inline"
+     sodipodi:insensitive="true">
     <rect
        style="fill:#e3dbdb;stroke-width:0.264999"
        id="rect1"
@@ -122,17 +123,18 @@
        id="text11"
        inkscape:label="name"><tspan
          sodipodi:role="line"
-         id="tspan11"
          style="stroke-width:0.265"
          x="35.039303"
-         y="61.479012">Up and Down</tspan></text>
+         y="61.479012"
+         id="tspan14">Lift Off</tspan></text>
   </g>
   <g
      inkscape:label="Level-2"
      inkscape:groupmode="layer"
      id="g8"
      style="display:inline"
-     transform="translate(82.861818,-0.03026495)">
+     transform="translate(82.861818,-0.03026495)"
+     sodipodi:insensitive="true">
     <rect
        style="display:inline;fill:#e3dbdb;stroke-width:0.264999"
        id="rect3"
@@ -192,7 +194,7 @@
          id="tspan12"
          style="stroke-width:0.265"
          x="53.36388"
-         y="61.690048">Side Thrust</tspan></text>
+         y="61.690048">Gravity Turn</tspan></text>
     <rect
        style="display:inline;fill:#e9afaf;stroke-width:0.529997"
        id="rect13"
@@ -201,5 +203,244 @@
        x="80.138184"
        y="13.030265"
        inkscape:label="goal-2" />
+  </g>
+  <g
+     inkscape:label="Level-3"
+     inkscape:groupmode="layer"
+     id="g21"
+     style="display:inline"
+     transform="translate(-17.138182,99.969735)"
+     sodipodi:insensitive="true">
+    <rect
+       style="display:inline;fill:#e3dbdb;stroke-width:0.264999"
+       id="rect15"
+       width="80"
+       height="60"
+       x="17.138182"
+       y="0.030264949"
+       inkscape:label="Screen" />
+    <rect
+       style="display:inline;fill:#e9afaf;stroke-width:0.529997"
+       id="rect16"
+       width="2"
+       height="2"
+       x="56.138184"
+       y="13.030265"
+       inkscape:label="goal-1" />
+    <rect
+       style="fill:#00ffff;stroke-width:0.260689"
+       id="rect17"
+       width="5"
+       height="60"
+       x="17.138182"
+       y="0.030264949"
+       inkscape:label="wall-left" />
+    <rect
+       style="fill:#00ffff;stroke-width:0.260689"
+       id="rect18"
+       width="5"
+       height="60"
+       x="92.138184"
+       y="0.030264949"
+       inkscape:label="wall-right" />
+    <rect
+       style="fill:#00ffff;stroke-width:0.301019"
+       id="rect19"
+       width="80"
+       height="5"
+       x="17.138182"
+       y="55.030266"
+       inkscape:label="wall-bottom" />
+    <rect
+       style="display:inline;fill:#00ffff;stroke-width:0.13462"
+       id="rect19-6"
+       width="40"
+       height="2"
+       x="37.138184"
+       y="29.030266"
+       inkscape:label="wall-bottom" />
+    <rect
+       style="fill:#008000;stroke-width:0.128737"
+       id="rect20"
+       width="6"
+       height="1"
+       x="54.138184"
+       y="28.530266"
+       inkscape:label="launch-pad" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;stroke-width:0.264999"
+       x="53.36388"
+       y="61.690048"
+       id="text20"
+       inkscape:label="name"><tspan
+         sodipodi:role="line"
+         style="stroke-width:0.265"
+         x="53.36388"
+         y="61.690048"
+         id="tspan22">Warp</tspan></text>
+    <rect
+       style="display:inline;fill:#e9afaf;stroke-width:0.529997"
+       id="rect21"
+       width="2"
+       height="2"
+       x="80.138184"
+       y="13.030265"
+       inkscape:label="goal-2" />
+    <rect
+       style="display:inline;fill:#e9afaf;stroke-width:0.529997"
+       id="rect22"
+       width="2"
+       height="2"
+       x="80.138184"
+       y="40.030266"
+       inkscape:label="goal-3" />
+    <rect
+       style="display:inline;fill:#e9afaf;stroke-width:0.529997"
+       id="rect22-8"
+       width="2"
+       height="2"
+       x="56.138184"
+       y="44.024265"
+       inkscape:label="goal-4" />
+    <rect
+       style="display:inline;fill:#e9afaf;stroke-width:0.529997"
+       id="rect22-8-0"
+       width="2"
+       height="2"
+       x="32.138184"
+       y="40.030266"
+       inkscape:label="goal-5" />
+    <rect
+       style="display:inline;fill:#e9afaf;stroke-width:0.529997"
+       id="rect22-8-0-5"
+       width="2"
+       height="2"
+       x="32.138184"
+       y="13.030265"
+       inkscape:label="goal-6" />
+  </g>
+  <g
+     inkscape:label="Level-4"
+     inkscape:groupmode="layer"
+     id="g29"
+     style="display:inline"
+     transform="translate(82.861818,99.969735)">
+    <rect
+       style="display:inline;fill:#e3dbdb;stroke-width:0.264999"
+       id="rect7"
+       width="80"
+       height="60"
+       x="17.138182"
+       y="0.030266404"
+       inkscape:label="Screen" />
+    <rect
+       style="fill:#00ffff;stroke-width:0.260689"
+       id="rect11"
+       width="5"
+       height="60"
+       x="17.138182"
+       y="0.030264949"
+       inkscape:label="wall-left" />
+    <rect
+       style="display:inline;fill:#00ffff;stroke-width:0.10208"
+       id="rect11-5"
+       width="2"
+       height="23"
+       x="56.138184"
+       y="2.0302651"
+       inkscape:label="wall-left" />
+    <rect
+       style="display:inline;fill:#00ffff;stroke-width:0.100001"
+       id="rect11-5-2"
+       width="2"
+       height="22.072531"
+       x="56.138184"
+       y="32.957737"
+       inkscape:label="wall-left" />
+    <rect
+       style="fill:#00ffff;stroke-width:0.260689"
+       id="rect12"
+       width="5"
+       height="60"
+       x="92.138184"
+       y="0.030264949"
+       inkscape:label="wall-right" />
+    <rect
+       style="fill:#00ffff;stroke-width:0.301019"
+       id="rect14"
+       width="80"
+       height="5"
+       x="17.138182"
+       y="55.030266"
+       inkscape:label="wall-bottom" />
+    <rect
+       style="display:inline;fill:#00ffff;stroke-width:0.178089"
+       id="rect23"
+       width="70"
+       height="2"
+       x="22.138182"
+       y="0.030265"
+       inkscape:label="wall-bottom" />
+    <rect
+       style="fill:#008000;stroke-width:0.128737"
+       id="rect24"
+       width="6"
+       height="1"
+       x="35.056919"
+       y="54.508526"
+       inkscape:label="launch-pad" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;stroke-width:0.264999"
+       x="53.36388"
+       y="61.690048"
+       id="text24"
+       inkscape:label="name"><tspan
+         sodipodi:role="line"
+         style="stroke-width:0.265"
+         x="53.36388"
+         y="61.690048"
+         id="tspan24">Cross</tspan></text>
+    <rect
+       style="display:inline;fill:#e9afaf;stroke-width:0.529997"
+       id="rect25"
+       width="2"
+       height="2"
+       x="80.138184"
+       y="13.030265"
+       inkscape:label="goal-1" />
+    <rect
+       style="display:inline;fill:#e9afaf;stroke-width:0.529997"
+       id="rect25-7"
+       width="2"
+       height="2"
+       x="60.806934"
+       y="4.2760983"
+       inkscape:label="goal-7" />
+    <rect
+       style="display:inline;fill:#e9afaf;stroke-width:0.529997"
+       id="rect26"
+       width="2"
+       height="2"
+       x="80.138184"
+       y="40.030266"
+       inkscape:label="goal-3" />
+    <rect
+       style="display:inline;fill:#e9afaf;stroke-width:0.529997"
+       id="rect28"
+       width="2"
+       height="2"
+       x="32.138184"
+       y="40.030266"
+       inkscape:label="goal-2" />
+    <rect
+       style="display:inline;fill:#e9afaf;stroke-width:0.529997"
+       id="rect29"
+       width="2"
+       height="2"
+       x="32.138184"
+       y="13.030265"
+       inkscape:label="goal-6" />
   </g>
 </svg>

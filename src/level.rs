@@ -5,7 +5,7 @@
 
 use bevy::prelude::*;
 
-use crate::entities::*;
+use crate::entities::{launch_pad::PadMaterials, *};
 
 #[derive(Debug)]
 pub struct Rectangle {
@@ -131,6 +131,7 @@ pub fn setup(
     mut game_state: ResMut<crate::resources::GameResources>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    pad_materials: Res<PadMaterials>,
     levels: Res<Levels>,
 ) {
     info!("Level setup called!");
@@ -152,6 +153,7 @@ pub fn setup(
     // Reset controller
     game_state.thrust = default();
     game_state.score = 0;
+    game_state.made_highscore = false;
     game_state.thrust_history.clear();
 
     // register goals
@@ -160,11 +162,11 @@ pub fn setup(
         game_state.goals.push(screen.goal_pos(*goal));
     }
 
-    let pad_mat = launch_pad::PadBundle::material(&mut materials);
     let (pad_pos, pad_size) = screen.center_pos(&level.pad);
-    let pad_bundle = launch_pad::PadBundle::new(&mut meshes, &pad_mat, pad_pos, pad_size);
+    let pad_bundle =
+        launch_pad::PadBundle::new(&mut meshes, &pad_materials.idle, pad_pos, pad_size);
     game_state.launch_pad = (pad_pos.extend(0.0), pad_size);
-    commands.spawn(pad_bundle);
+    commands.spawn((pad_bundle, launch_pad::Pad));
 
     // spawn first goal
     let goal_pos = screen.goal_pos(level.goals[0]);

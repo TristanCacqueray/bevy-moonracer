@@ -9,7 +9,7 @@ roxmltree = "0.18"
 itertools = "0.11"
 lazy_static = "*"
 gilrs = "*"
-serde = "1"
+serde = { version = "1", features = ["rc"] }
 
 [dependencies.bevy_pkv]
 git = "https://github.com/TristanCacqueray/bevy_pkv.git"

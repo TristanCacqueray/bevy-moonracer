@@ -20,7 +20,6 @@ mod entities;
 mod events;
 mod level;
 pub mod level_loader;
-mod moonracer;
 mod resources;
 mod ui;
 

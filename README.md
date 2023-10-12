@@ -24,7 +24,8 @@ This can be used by beginners to get some starting points for their own game.
 - [x] 2d box collision system.
 - [x] Reach goals to increase the score.
 - [x] Finish the level by landing back on the launch pad.
-- [ ] Save user data (powered by [bevy_pkv](https://github.com/johanhelsing/bevy_pkv)).
+- [x] Save user data (powered by [bevy_pkv](https://github.com/johanhelsing/bevy_pkv)).
+- [ ] Save ghost input data.
 - [ ] Difficulty settings (Crash on high velocity, no drag, no gravity).
 - [ ] Story line (e.g. a pilot trying to become an astranaut).
 
@@ -67,8 +68,8 @@ This can be used by beginners to get some starting points for their own game.
 
 - [x] Menus (powered by [ui-navigation](https://github.com/nicopap/ui-navigation)).
 - [x] Pause/resume.
-- [ ] Level selection screen.
-- [ ] Level end screen with current score and a next level button.
+- [x] Level selection screen.
+- [x] Level end screen with current score and a next level button.
 - [ ] Tooltips to explain current goal.
 - [ ] Background demo to show what needs to be done. (e.g. a bot playing the first level).
 - [ ] Settings menu to adjust the sound volume and toggle the bloom effect.
@@ -83,3 +84,5 @@ This can be used by beginners to get some starting points for their own game.
 - [x] Build wasm version with `nix build .#web`.
 - [ ] Setup GitHub action to update the online demo.
 - [ ] Build native version for windows/mac/linux
+
+Clear save data in browser local storage or in `~/.local/share/save/bevy_pkv.sled/`.

@@ -16,6 +16,7 @@ pub enum AppStatus {
     Menu,
     SelectLevel,
     Playing,
+    Completed,
     Paused,
 }
 
@@ -31,18 +32,23 @@ impl Plugin for Plug {
             .add_systems(
                 Update,
                 (
+                    handle_nav_requests.before(NavRequestSystem),
                     handle_nav_events.after(NavRequestSystem),
-                    handle_nav_requests.after(NavRequestSystem),
                 ),
             )
             .add_systems(Update, handle_app_input)
-            .add_plugins((splash::Plug, select::Plug, menu::Plug, pause::Plug));
+            .add_plugins((
+                splash::Plug,
+                select::Plug,
+                menu::Plug,
+                pause::Plug,
+                completed::Plug,
+            ));
     }
 }
 
 #[derive(Component)]
 pub enum MenuAction {
-    Play,
     Restart,
     SelectMenu(AppStatus),
     LoadLevel(usize),
@@ -60,7 +66,8 @@ fn handle_nav_requests(
             let app_status = app_status.get();
             let next_status = match *app_status {
                 AppStatus::SelectLevel => Some(AppStatus::Menu),
-                AppStatus::Paused => Some(AppStatus::Playing),
+                AppStatus::Completed => Some(AppStatus::Menu),
+                AppStatus::Paused => Some(AppStatus::Menu),
                 AppStatus::Menu => {
                     app_exit_events.send(bevy::app::AppExit);
                     None
@@ -85,11 +92,6 @@ fn handle_nav_events(
     events.nav_iter().activated_in_query_foreach_mut(
         &mut buttons,
         |mut button| match &mut *button {
-            MenuAction::Play => {
-                info!("Starting the game!");
-                next_app_status.set(AppStatus::Playing);
-                next_game_status.set(GameStatus::Spawning);
-            }
             MenuAction::Quit => app_exit_events.send(bevy::app::AppExit),
             MenuAction::Restart => {
                 next_app_status.set(AppStatus::Playing);
@@ -102,6 +104,9 @@ fn handle_nav_events(
             MenuAction::LoadLevel(pos) => {
                 info!("Loading level {}", pos);
                 resources.current_level = *pos;
+                resources.ghost = None;
+                resources.thrust_history.clear();
+                resources.made_highscore = false;
                 next_app_status.set(AppStatus::Playing);
                 next_game_status.set(GameStatus::Spawning);
             }
@@ -116,27 +121,26 @@ const P_W: ScanCode = ScanCode(80);
 fn handle_app_input(
     keyboard_input: Res<Input<ScanCode>>,
     app_status: Res<State<AppStatus>>,
-    game_status: Res<State<crate::game_status::GameStatus>>,
     gamepad_input: Res<Input<GamepadButton>>,
     mut next_app_status: ResMut<NextState<AppStatus>>,
 ) {
-    for ev in keyboard_input.get_just_pressed() {
-        match *ev {
-            ESC | P | P_W => {
-                if game_status.is_playing() {
-                    let next_status = if app_status.get() == &AppStatus::Paused {
-                        AppStatus::Playing
-                    } else {
-                        AppStatus::Paused
-                    };
-                    next_app_status.set(next_status);
-                }
-            }
-            _ => {}
-        }
+    let app_status = *app_status.get();
+    let pause_pressed_keyboard = keyboard_input
+        .get_just_pressed()
+        .any(|keycode| matches!(*keycode, ESC | P | P_W));
+    let start_pressed = gamepad_input
+        .get_just_pressed()
+        .any(|gb| gb.button_type == GamepadButtonType::Start);
+    if pause_pressed_keyboard || start_pressed {
+        if app_status == AppStatus::Paused {
+            next_app_status.set(AppStatus::Playing);
+        } else if app_status == AppStatus::Playing {
+            next_app_status.set(AppStatus::Paused);
+        };
     }
+
     // Skip splash screen on any input
-    if app_status.get() == &AppStatus::Splash
+    if app_status == AppStatus::Splash
         && (keyboard_input.get_just_pressed().len() > 0
             || gamepad_input.get_just_pressed().len() > 0)
     {
@@ -156,6 +160,7 @@ fn load_app_status_from_env(
             next_game_status.set(GameStatus::Spawning);
         }
         "select" => next_app_status.set(AppStatus::SelectLevel),
+        "completed" => next_app_status.set(AppStatus::Completed),
         _ => {}
     }
 }
@@ -219,12 +224,15 @@ mod menu {
     pub struct Plug;
     impl Plugin for Plug {
         fn build(&self, app: &mut App) {
-            app.add_systems(OnEnter(AppStatus::Menu), menu_setup)
-                .add_systems(OnExit(AppStatus::Menu), despawn);
+            app.add_systems(
+                OnEnter(AppStatus::Menu),
+                (crate::level::despawn, menu_setup),
+            )
+            .add_systems(OnExit(AppStatus::Menu), despawn);
         }
     }
 
-    fn menu_setup(mut commands: Commands) {
+    fn menu_setup(mut commands: Commands, save: Res<crate::resources::GameResources>) {
         info!("Menu setup!");
 
         commands
@@ -254,7 +262,20 @@ mod menu {
                     ),
                     MenuElem,
                 ));
-                crate::ui::button::spawn_button(parent, "New Game", MenuAction::Play);
+                let new_player = save.highscores.is_empty();
+                let play_title = if new_player { "New Game" } else { "Continue" };
+                crate::ui::button::spawn_button(
+                    parent,
+                    play_title,
+                    MenuAction::LoadLevel(save.current_level),
+                );
+                if !new_player {
+                    crate::ui::button::spawn_button(
+                        parent,
+                        "Select Level",
+                        MenuAction::SelectMenu(AppStatus::SelectLevel),
+                    );
+                }
                 crate::ui::button::spawn_button(parent, "Quit", MenuAction::Quit);
             });
     }
@@ -276,13 +297,28 @@ mod select {
     pub struct Plug;
     impl Plugin for Plug {
         fn build(&self, app: &mut App) {
-            app.add_systems(OnEnter(AppStatus::SelectLevel), crate::ui::levels::spawn)
-                .add_systems(OnExit(AppStatus::SelectLevel), despawn);
+            app.add_systems(
+                OnEnter(AppStatus::SelectLevel),
+                (crate::level::despawn, crate::ui::levels::spawn),
+            )
+            .add_systems(OnExit(AppStatus::SelectLevel), despawn);
         }
     }
 }
 
-fn despawn(to_despawn: Query<Entity, With<MenuElem>>, mut commands: Commands) {
+mod completed {
+    use super::*;
+    pub struct Plug;
+    impl Plugin for Plug {
+        fn build(&self, app: &mut App) {
+            app.add_systems(OnEnter(AppStatus::Completed), crate::ui::completed::spawn)
+                .add_systems(OnExit(AppStatus::Completed), despawn);
+        }
+    }
+}
+
+pub fn despawn(to_despawn: Query<Entity, With<MenuElem>>, mut commands: Commands) {
+    info!("Despawning the ui");
     for entity in &to_despawn {
         commands.entity(entity).despawn_recursive();
     }

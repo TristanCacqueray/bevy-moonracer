@@ -84,6 +84,8 @@ fn setup_navigation_input(mut input_mapping: ResMut<InputMapping>) {
     input_mapping.focus_follows_mouse = true;
     // don't use lock/unlock, de-assign escape so that it can be used for cancel.
     input_mapping.key_free = KeyCode::F9;
+    // de-assign Start button.
+    input_mapping.free_button = GamepadButtonType::Other(255);
 }
 
 fn print_nav_events(mut events: EventReader<NavEvent>) {
@@ -95,7 +97,8 @@ fn print_nav_events(mut events: EventReader<NavEvent>) {
 fn return_trigger_action(mut requests: EventWriter<NavRequest>, input: Res<Input<KeyCode>>) {
     if input.just_pressed(KeyCode::Return) {
         requests.send(NavRequest::Action);
-    } else if input.just_pressed(KeyCode::Escape) {
+    }
+    if input.just_pressed(KeyCode::Escape) {
         requests.send(NavRequest::Cancel);
     }
 }

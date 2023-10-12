@@ -2,5 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 pub mod button;
+pub mod completed;
 pub mod levels;
 pub mod pause;

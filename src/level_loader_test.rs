@@ -6,7 +6,7 @@
 use bevy_moonracer::level_loader;
 
 fn main() {
-    for level in level_loader::load() {
+    for level in level_loader::load().0 {
         println!("{:?}", level);
     }
 }

@@ -4,6 +4,7 @@
 //! This module contains the global state.
 
 use bevy::prelude::*;
+use bevy::utils::HashMap;
 
 pub mod save;
 
@@ -26,6 +27,8 @@ pub struct GameResources {
     pub ghost: Option<Ghost>,
 
     pub current_level: usize,
+    pub made_highscore: bool,
+    pub highscores: HashMap<usize, usize>,
 }
 
 impl GameResources {
@@ -34,6 +37,9 @@ impl GameResources {
     }
     pub fn elapsed(&self) -> String {
         format!("{:.03} sec", self.elapsed_sec())
+    }
+    pub fn prev_score(&self, level: usize) -> usize {
+        self.highscores.get(&level).cloned().unwrap_or(usize::MAX)
     }
 }
 
@@ -48,6 +54,8 @@ impl Default for GameResources {
             ghost: None,
             current_level: 0,
             launch_pad: (Vec3::default(), Vec2::default()),
+            made_highscore: false,
+            highscores: HashMap::new(),
         }
     }
 }
