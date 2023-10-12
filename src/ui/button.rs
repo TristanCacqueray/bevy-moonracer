@@ -16,10 +16,10 @@ const HOVERED_BUTTON: Color = Color::rgb(0.25, 0.25, 0.25);
 // const HOVERED_PRESSED_BUTTON: Color = Color::rgb(0.25, 0.65, 0.25);
 // const PRESSED_BUTTON: Color = Color::rgb(0.35, 0.75, 0.35);
 
-const TEXT_COLOR: Color = Color::rgb(0.9, 0.9, 0.9);
+pub const TEXT_COLOR: Color = Color::rgb(0.9, 0.9, 0.9);
 
 lazy_static! {
-    static ref STYLE_BUTTON: Style = Style {
+    pub static ref STYLE_BUTTON: Style = Style {
         width: Val::Px(250.0),
         height: Val::Px(65.0),
         margin: UiRect::all(Val::Px(20.0)),
@@ -27,7 +27,7 @@ lazy_static! {
         align_items: AlignItems::Center,
         ..default()
     };
-    static ref STYLE_TEXT: TextStyle = TextStyle {
+    pub static ref STYLE_TEXT: TextStyle = TextStyle {
         font_size: 40.0,
         color: TEXT_COLOR,
         ..default()

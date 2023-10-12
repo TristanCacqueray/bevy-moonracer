@@ -120,6 +120,7 @@ fn load_app_status_from_env(
             next_app_status.set(AppStatus::Playing);
             next_game_status.set(GameStatus::Spawning);
         }
+        "select" => next_app_status.set(AppStatus::SelectLevel),
         _ => {}
     }
 }
