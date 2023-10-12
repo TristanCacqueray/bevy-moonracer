@@ -242,8 +242,6 @@ pub fn move_ship(
     state.thrust_history.push(current_thrust);
 }
 
-const R: ScanCode = ScanCode(19);
-
 const W: ScanCode = ScanCode(103);
 const A: ScanCode = ScanCode(105);
 const S: ScanCode = ScanCode(108);
@@ -256,7 +254,6 @@ const AU: ScanCode = ScanCode(17);
 const AD: ScanCode = ScanCode(31);
 
 // wasm (firefox)
-const R_W: ScanCode = ScanCode(82);
 const W_W: ScanCode = ScanCode(87);
 const A_W: ScanCode = ScanCode(65);
 const S_W: ScanCode = ScanCode(83);
@@ -269,17 +266,12 @@ const AD_W: ScanCode = ScanCode(40);
 pub fn handle_input(
     mut state: ResMut<GameResources>,
     game_status: Res<State<GameStatus>>,
-    mut next_state: ResMut<NextState<GameStatus>>,
     keyboard_input: Res<Input<ScanCode>>,
     gamepad_button_input: Res<Input<GamepadButton>>,
+    mut next_game_status: ResMut<NextState<GameStatus>>,
 ) {
     let mut dx = 0.0;
     let mut dy = 0.0;
-
-    if keyboard_input.just_pressed(R) || keyboard_input.just_pressed(R_W) {
-        next_state.set(GameStatus::Spawning);
-        return;
-    }
 
     for ev in gamepad_button_input.get_pressed() {
         match ev.button_type {
@@ -287,15 +279,6 @@ pub fn handle_input(
             GamepadButtonType::DPadRight => dx = 1.0,
             GamepadButtonType::DPadUp => dy = 1.0,
             GamepadButtonType::DPadDown => dy = -1.0,
-            _ => {}
-        }
-    }
-    for ev in gamepad_button_input.get_just_pressed() {
-        match ev.button_type {
-            GamepadButtonType::North => {
-                next_state.set(GameStatus::Spawning);
-                return;
-            }
             _ => {}
         }
     }
@@ -318,6 +301,6 @@ pub fn handle_input(
     if state.thrust != default() && game_status.get() == &GameStatus::Idling {
         info!("Lift off!");
         state.frame_count = 0;
-        next_state.set(GameStatus::Flying);
+        next_game_status.set(GameStatus::Flying);
     }
 }

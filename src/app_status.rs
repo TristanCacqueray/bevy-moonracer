@@ -118,11 +118,15 @@ const ESC: ScanCode = ScanCode(1);
 const P: ScanCode = ScanCode(25);
 const P_W: ScanCode = ScanCode(80);
 
+const R: ScanCode = ScanCode(19);
+const R_W: ScanCode = ScanCode(82);
+
 fn handle_app_input(
     keyboard_input: Res<Input<ScanCode>>,
     app_status: Res<State<AppStatus>>,
     gamepad_input: Res<Input<GamepadButton>>,
     mut next_app_status: ResMut<NextState<AppStatus>>,
+    mut next_game_status: ResMut<NextState<GameStatus>>,
 ) {
     let app_status = *app_status.get();
     let pause_pressed_keyboard = keyboard_input
@@ -145,6 +149,22 @@ fn handle_app_input(
             || gamepad_input.get_just_pressed().len() > 0)
     {
         next_app_status.set(AppStatus::Menu)
+    }
+
+    if matches!(
+        app_status,
+        AppStatus::Paused | AppStatus::Completed | AppStatus::Playing
+    ) {
+        let respawn_pressed_keyboard = keyboard_input
+            .get_just_pressed()
+            .any(|keycode| matches!(*keycode, R | R_W));
+        let respawn_pressed = gamepad_input
+            .get_just_pressed()
+            .any(|gb| gb.button_type == GamepadButtonType::North);
+        if respawn_pressed_keyboard || respawn_pressed {
+            next_game_status.set(GameStatus::Spawning);
+            next_app_status.set(AppStatus::Playing);
+        }
     }
 }
 
