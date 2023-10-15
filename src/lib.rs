@@ -64,7 +64,7 @@ fn setup_camera(mut commands: Commands) {
             }
             .into(),
             tonemapping: Tonemapping::TonyMcMapface, // 2. Using a tonemapper that desaturates to white is recommended
-            transform: Transform::from_xyz(0.0, 0.0, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
+            transform: Transform::from_xyz(0.0, 0.9, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
             ..default()
         },
         BloomSettings::default(), // 3. Enable bloom for the camera

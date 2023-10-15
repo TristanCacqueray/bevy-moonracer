@@ -40,7 +40,7 @@ impl WallBundle {
         Self {
             pos: WallPosition { translation, size },
             pbr: PbrBundle {
-                mesh: meshes.add(shape::Quad::new(size).try_into().unwrap()),
+                mesh: meshes.add(shape::Box::new(size.x, size.y, 0.4).try_into().unwrap()),
                 material: material.clone(),
                 transform: Transform {
                     translation,
