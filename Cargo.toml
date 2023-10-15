@@ -35,6 +35,7 @@ features = [
   "bevy_pbr",
   "bevy_render",
   "bevy_text",
+  "bevy_sprite",
   "bevy_ui",
   "multi-threaded",
   "bevy_winit",
@@ -54,6 +55,8 @@ default-features = false
 features = [
   "dynamic_linking",
   "wayland",
+  "file_watcher",
+  "embedded_watcher",
 ]
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]

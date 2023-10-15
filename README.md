@@ -58,7 +58,7 @@ This can be used by beginners to get some starting points for their own game.
 ### Graphisms
 
 - [ ] Logo
-- [ ] Shader background
+- [x] Shader background
 - [ ] Thrust particles
 - [ ] Crash animation
 - [ ] 3d models

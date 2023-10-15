@@ -40,6 +40,7 @@ pub fn moonracer_main() {
     App::new()
         .add_plugins(boot::Plug)
         .add_systems(Startup, setup_camera)
+        .add_plugins(ui::background::Plug)
         .add_plugins(events::Plug)
         .add_plugins(resources::save::Plug)
         .add_plugins(app_status::Plug)
