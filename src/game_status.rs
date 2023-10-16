@@ -269,10 +269,11 @@ pub fn handle_input(
     keyboard_input: Res<Input<ScanCode>>,
     gamepad_button_input: Res<Input<GamepadButton>>,
     mut next_game_status: ResMut<NextState<GameStatus>>,
+    mut events: EventWriter<crate::events::Thruster>,
 ) {
     let mut dx = 0.0;
     let mut dy = 0.0;
-
+    let prev_thrust = state.thrust;
     for ev in gamepad_button_input.get_pressed() {
         match ev.button_type {
             GamepadButtonType::DPadLeft => dx = -1.0,
@@ -297,6 +298,13 @@ pub fn handle_input(
         }
     }
     state.thrust = Vec2::new(dx, dy);
+    if prev_thrust != state.thrust {
+        if prev_thrust == Vec2::ZERO {
+            events.send(crate::events::Thruster::Firing)
+        } else if state.thrust == Vec2::ZERO {
+            events.send(crate::events::Thruster::Stopped)
+        }
+    }
 
     if state.thrust != default() && game_status.get() == &GameStatus::Idling {
         info!("Lift off!");

@@ -4,7 +4,38 @@
         <meta charset="utf-8" />
         <title>MoonRacer</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <style>html, body {margin: 0; height: 100%; overflow: hidden}</style>
         <link data-trunk rel="rust" data-wasm-opt="s" />
-    </head>
-</html>
+        <style>
+html, body {margin: 0; height: 100%; overflow: hidden; background: black}
+#play-btn {
+  font-size: 42px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+</style></head><body>
+<div id="play-btn">Start MoonRacer</div>
+<script type="module">
+import init from './JSFILE';
+function waitForCanvas() {
+    setTimeout(() => {
+        const canvas = document.getElementsByTagName("canvas")
+        if (canvas.length == 0) {
+            waitForCanvas()
+        } else {
+            canvas[0].focus()
+        }
+    }, 1000)
+}
+const btn = document.querySelector('#play-btn');
+btn.onclick = () => {
+  btn.remove()
+  init()
+  waitForCanvas()
+}
+</script>
+</body></html>

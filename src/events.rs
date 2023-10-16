@@ -11,9 +11,19 @@ pub struct NewHighscore {
     pub score: usize,
 }
 
+#[derive(Event, Default)]
+pub enum Thruster {
+    #[default]
+    Stopped,
+    Firing,
+}
+
+#[derive(Event, Default)]
+struct StoppingThruster;
+
 pub struct Plug;
 impl Plugin for Plug {
     fn build(&self, app: &mut App) {
-        app.add_event::<NewHighscore>();
+        app.add_event::<NewHighscore>().add_event::<Thruster>();
     }
 }

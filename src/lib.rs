@@ -16,6 +16,7 @@ use bevy::{
 mod app_status;
 mod game_status;
 
+mod audio;
 mod entities;
 mod events;
 mod level;
@@ -29,7 +30,11 @@ mod boot {
     pub struct Plug;
     impl Plugin for Plug {
         fn build(&self, app: &mut App) {
-            app.add_plugins(DefaultPlugins)
+            app //.add_plugins(DefaultPlugins)
+                .add_plugins(DefaultPlugins.set(bevy::audio::AudioPlugin {
+                    global_volume: GlobalVolume::new(0.2),
+                    ..default()
+                }))
                 .insert_resource(ClearColor(Color::BLACK))
                 .add_plugins(bevy_wasm_window_resize::WindowResizePlugin);
         }
@@ -40,8 +45,11 @@ pub fn moonracer_main() {
     App::new()
         .add_plugins(boot::Plug)
         .add_systems(Startup, setup_camera)
-        .add_plugins(ui::background::Plug)
+        // Events are shared between system, make sure they are initialized
         .add_plugins(events::Plug)
+        .add_plugins(ui::background::Plug)
+        // .add_systems(Update, bevy::window::close_on_esc)
+        .add_plugins(crate::audio::Plug)
         .add_plugins(resources::save::Plug)
         .add_plugins(app_status::Plug)
         .add_plugins(game_status::Plug)

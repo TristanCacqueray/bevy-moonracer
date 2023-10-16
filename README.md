@@ -52,7 +52,7 @@ This can be used by beginners to get some starting points for their own game.
 ### Sounds
 
 - [ ] Background music
-- [ ] White noise shhhh for the thrust
+- [x] White noise shhhh for the thrust
 - [ ] Rewarding bell sample when reaching a goal
 
 ### Graphisms

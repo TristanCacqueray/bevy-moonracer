@@ -67,9 +67,12 @@
           trunkIndexPath = "./index.html";
           # Fixup the dist output for a publishable package.
           postInstall = ''
-            rm $out/index.html
-            mv $out/*.js $out/moonracer.js
-            mv $out/*.wasm $out/moonracer.wasm
+            chmod 644 $out/index.html
+            # grab the generated hash
+            JSFILE=$(basename $out/*.js)
+            # Fix path url, remove the auto start and fix the custom start
+            sed -e 's/href="\//href=".\//' -e "s/^ *<script.*init('.*$//" -e "s/JSFILE/$JSFILE/" -i $out/index.html
+            chmod 444 $out/index.html
           '';
         });
 
@@ -91,6 +94,8 @@
             libxkbcommon
             wayland # To use the wayland feature
 
+            pipewire
+
             trunk
             cargo-watch
           ];
@@ -100,6 +105,7 @@
 
           LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath buildInputs;
           XCURSOR_PATH = "/usr/share/icons/";
+          ALSA_PLUGIN_DIR = "${pkgs.pipewire.lib}/lib/alsa-lib/";
         };
       });
 }
