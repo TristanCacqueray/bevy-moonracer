@@ -14,22 +14,19 @@ rodio = { version = "0.17", default-features = false }
 funutd = "0.12"
 
 [dependencies.bevy_pkv]
-git = "https://github.com/TristanCacqueray/bevy_pkv.git"
-rev = "ccf45f16a548b3583a28d1a0337e38cabeb970fc"
+version = "0.9"
 default-features = false
 features = [ "bevy", "sled" ] # redb do not link with mold: error: undefined symbol: _$LT$redb..tree_store...
 
 [dependencies."bevy-ui-navigation"]
-git = "https://github.com/TristanCacqueray/ui-navigation.git"
-rev = "0474c3206abb25d234a07af6cf6e1b596a01b449"
+version = "0.33"
 
 [dependencies.bevy_wasm_window_resize]
 git = "https://github.com/TristanCacqueray/bevy_wasm_window_resize.git"
-rev = "423adf8de011f3cd7da24b1bd1ff3a28d4efaef5"
+rev = "3713dc2a4cedb12e980ebdc79d8485ca18640664"
 
 [dependencies.bevy]
-git = "https://github.com/bevyengine/bevy.git"
-rev = "35073cf7aa9eaf748e167c103921a6764fcedfb1"
+version = "0.12"
 default-features = false
 features = [
   # core
@@ -51,8 +48,7 @@ features = [
 ]
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies.bevy]
-git = "https://github.com/bevyengine/bevy.git"
-rev = "35073cf7aa9eaf748e167c103921a6764fcedfb1"
+version = "0.12"
 default-features = false
 features = [
   "dynamic_linking",

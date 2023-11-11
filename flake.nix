@@ -4,18 +4,16 @@
 
   inputs = {
     # nixpkgs is tracking nixpkgs-unstable
-    nixpkgs.url =
-      "github:NixOS/nixpkgs/b11ced7a9c1fc44392358e337c0d8f58efc97c89";
+    nixpkgs.url = "github:NixOS/nixpkgs";
 
     flake-utils.url = "github:numtide/flake-utils";
 
     crane = {
-      url = "github:ipetkov/crane/8b4f7a4dab2120cf41e7957a28a853f45016bd9d";
+      url = "github:ipetkov/crane";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     rust-overlay = {
-      url =
-        "github:oxalica/rust-overlay/46dbbcaf435b0d22b149684589b9b059f73f4ffc";
+      url = "github:oxalica/rust-overlay";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
@@ -45,15 +43,15 @@
           src = ./.; # The original, unfiltered source
           filter = path: type:
             # prevent "error: linker `clang` not found" issue
-            !(pkgs.lib.hasSuffix "config.toml" path) && (
-            (pkgs.lib.hasSuffix ".html" path)
-            || (pkgs.lib.hasSuffix ".config.js" path)
-            || (pkgs.lib.hasSuffix ".css" path)
-            || (pkgs.lib.hasSuffix ".md" path)
-            || (pkgs.lib.hasSuffix ".svg" path)
-            || (pkgs.lib.hasSuffix ".txt" path) ||
-            # Default filter from crane (allow .rs files)
-            (craneLib.filterCargoSources path type));
+            !(pkgs.lib.hasSuffix "config.toml" path)
+            && ((pkgs.lib.hasSuffix ".html" path)
+              || (pkgs.lib.hasSuffix ".config.js" path)
+              || (pkgs.lib.hasSuffix ".css" path)
+              || (pkgs.lib.hasSuffix ".md" path)
+              || (pkgs.lib.hasSuffix ".svg" path)
+              || (pkgs.lib.hasSuffix ".txt" path) ||
+              # Default filter from crane (allow .rs files)
+              (craneLib.filterCargoSources path type));
         };
         web-info = {
           src = src;

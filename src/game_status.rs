@@ -47,7 +47,7 @@ impl Plugin for Plug {
                     .run_if(in_playing_state(GameStatus::Flying)),
             )
             // Configure how frequently our gameplay systems are run
-            .insert_resource(FixedTime::new_from_secs(1.0 / 60.0))
+            .insert_resource(Time::<Fixed>::from_hz(60.0))
             .add_systems(
                 FixedUpdate,
                 ((move_ship, check_goal).after(handle_input))
