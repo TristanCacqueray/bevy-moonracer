@@ -4,7 +4,7 @@ A little game to try out [bevy](https://bevyengine.org).
 
 Online demo: [https://tristancacqueray.github.io/bevy-moonracer](https://tristancacqueray.github.io/bevy-moonracer).
 
-> Checkout the initial prototype in Haskell: [moonracer](../moonracer).
+> Checkout the initial prototype in Haskell: [moonracer](https://github.com/TristanCacqueray/moonracer).
 
 
 ## Gameplay
